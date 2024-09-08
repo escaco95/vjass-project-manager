@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="vJassMainJBlueprint.V1.ProjectEditor.ProjectEditWorkspace"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:projecteditor="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor"
+             mc:Ignorable="d" 
+             d:DesignWidth="800"
+             d:DesignHeight="450"
+             Focusable="True"
+             FocusVisualStyle="{x:Null}"
+             Loaded="OnLoaded"
+             KeyDown="OnKeyDown">
+
+    <DockPanel>
+        <!-- 상단 메뉴 -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="파일(_F)">
+                <MenuItem Header="새로 만들기(_N)" InputGestureText="Ctrl+N" Click="OnMenuFileNewClick" />
+                <MenuItem Header="열기(_O)" InputGestureText="Ctrl+O" Click="OnMenuFileOpenClick" />
+                <Separator/>
+                <MenuItem Header="닫기(_C)" InputGestureText="Ctrl+W" Click="OnMenuFileCloseClick" />
+                <Separator/>
+                <MenuItem Header="저장(_S)" InputGestureText="Ctrl+S" Click="OnMenuFileSaveClick" />
+                <MenuItem Header="다른 이름으로 저장(_A)" InputGestureText="Ctrl+Shift+S" Click="OnMenuFileSaveAsClick" />
+                <Separator/>
+                <MenuItem Header="끝내기(_X)" InputGestureText="Alt+F4" Click="OnMenuFileExitClick" />
+            </MenuItem>
+            <MenuItem Header="편집(_E)">
+                <MenuItem Header="삭제(_D)" InputGestureText="Del" Click="OnMenuEditDelete"/>
+                <Separator/>
+                <MenuItem Header="모두 선택(_A)" InputGestureText="Ctrl+A" Click="OnMenuEditSelectAll"/>
+                <MenuItem Header="선택 안 함(_O)" InputGestureText="Esc" Click="OnMenuEditUnselectAll"/>
+                <Separator/>
+                <MenuItem Header="클립보드로 이미지 복사" InputGestureText="Ctrl+Shift+C" Click="OnMenuEditCopyImage"/>
+                <MenuItem Header="클립보드에 복사된 이미지 적용" InputGestureText="Ctrl+Shift+V" Click="OnMenuEditPasteImage"/>
+            </MenuItem>
+            <MenuItem Header="보기(_V)">
+                <MenuItem Header="샘플 아이콘 모음(_I)" InputGestureText="Ctrl+Alt+I" Click="OnMenuViewToolSampleIcon"/>
+                <Separator/>
+                <MenuItem Header="모두 보이기(_A)" InputGestureText="Space" Click="OnMenuViewAllNodesClick"/>
+            </MenuItem>
+            <MenuItem Header="프로젝트(_P)">
+                <MenuItem Header="프로젝트 이름 바꾸기(_M)..." Click="OnMenuProjectChangeName"/>
+                <MenuItem Header="프로젝트 저자 바꾸기(_A)..." Click="OnMenuProjectChangeAuthor"/>
+                <Separator/>
+                <MenuItem Header="프로젝트 설계도 크기 바꾸기(_R)..." Click="OnMenuProjectChangeSize"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- 아이콘 영역 -->
+        <projecteditor:ProjectEditElementSampleIcons x:Name="ToolSampleIcons" DockPanel.Dock="Right"/>
+
+        <!-- 작업 영역 -->
+        <Grid x:Name="WorkspaceGrid" 
+            Background="#181818"
+            MouseDown="OnGridMouseDown"
+            MouseUp="OnGridMouseUp"
+            MouseMove="OnGridMouseMove"
+            MouseWheel="OnGridMouseWheel">
+
+            <Canvas x:Name="ZoomParent" 
+                ClipToBounds="True">
+                
+                <!-- 줌/패닝 기능을 제공하는 컨테이너 -->
+                <StackPanel x:Name="ZoomChild"
+                    Canvas.Left="0"
+                    Canvas.Top="0">
+
+                    <StackPanel.LayoutTransform>
+                        <ScaleTransform ScaleX="1.0" ScaleY="1.0" />
+                    </StackPanel.LayoutTransform>
+
+                    <!-- 프로젝트 문서 대응 그리드 -->
+                    <Grid x:Name="FooterZoomGrid"
+                        Width="500" 
+                        Height="500"
+                        Background="#1F1F1F" >
+
+                        <Border>
+                            <TextBlock x:Name="TextProjectName" 
+                                Text="동물원 디펜스" 
+                                FontSize="100"
+                                Padding="10"
+                                Foreground="White" 
+                                TextWrapping="NoWrap" 
+                                TextAlignment="Left"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left" Margin="20,0,0,0"/>
+                        </Border>
+
+                        <Border>
+                            <TextBlock x:Name="TextProjectAuthor" Text="By 동동주" 
+                                FontSize="50"
+                                Padding="20"
+                                Foreground="White" 
+                                TextWrapping="NoWrap" 
+                                TextAlignment="Left"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left" Margin="20,120,0,0"/>
+                        </Border>
+
+                        <!-- 작업 영역 경계 표시기 -->
+                        <Border BorderBrush="#409AE1" BorderThickness="1" />
+
+                        <!-- 프로젝트 노드 컨테이너 -->
+                        <Canvas x:Name="NodeContainer">
+                            <!-- 격자 스냅 눈금자 커서 -->
+                            <projecteditor:ProjectEditElementSnapCursor x:Name="SnapCursor" Visibility="Collapsed"/>
+                        </Canvas>
+
+                    </Grid>
+
+                </StackPanel>
+
+                <!-- 개체 선택 범위 표시기 -->
+                <Grid x:Name="SelectionGrid" Background="#80409AE1" Visibility="Hidden">
+                    <Border BorderBrush="#C7DDEF" BorderThickness="1" />
+                </Grid>
+            </Canvas>
+            
+            <!-- 메시지 박스 -->
+            <Border>
+                <projecteditor:ProjectEditElementMessageBox x:Name="MessageText" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" />
+            </Border>
+        </Grid>
+    </DockPanel>
+</UserControl>

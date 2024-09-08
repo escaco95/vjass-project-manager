@@ -1,0 +1,24 @@
+﻿<Window x:Class="vJassMainJBlueprint.Utils.InputBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:vJassMainJBlueprint.Utils"
+        mc:Ignorable="d"
+        Title="InputBox" 
+        Height="150" 
+        Width="300" 
+        WindowStartupLocation="CenterOwner" 
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        Loaded="Window_Loaded" 
+        KeyDown="Window_KeyDown" >
+    <StackPanel Margin="10">
+        <TextBlock x:Name="messageTextBox"  Text="Enter your input:" Margin="0,0,0,10"/>
+        <TextBox x:Name="inputTextBox" Width="260" Height="25" Margin="0,0,0,10"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="확인(_O)" Width="80" Click="OkButton_Click" Margin="0,0,10,0"/>
+            <Button Content="취소(_C)" Width="80" Click="CancelButton_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
