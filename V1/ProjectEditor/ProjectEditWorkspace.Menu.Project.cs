@@ -106,26 +106,38 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 return;
             }
 
-            ProjectSourceAdd(filePaths);
+            var addedFileCount = ProjectSourceAdd(filePaths);
+            MessageText.Info($"{addedFileCount}개의 파일을 추가했습니다.");
         }
 
-        private void ProjectSourceAdd(List<string> filePaths)
+        private int ProjectSourceAdd(List<string> filePaths)
         {
             // 노드의 추가 위치는 화면 중앙
             double zoomFactor = ((ScaleTransform)ZoomChild.LayoutTransform).ScaleX;
             var viewX = ZoomParent.ActualWidth / 2 / zoomFactor;
             var viewY = ZoomParent.ActualHeight / 2 / zoomFactor;
-            var worldX = - Canvas.GetLeft(ZoomChild) / zoomFactor + viewX;
-            var worldY = - Canvas.GetTop(ZoomChild) / zoomFactor + viewY;
+            var worldX = -Canvas.GetLeft(ZoomChild) / zoomFactor + viewX;
+            var worldY = -Canvas.GetTop(ZoomChild) / zoomFactor + viewY;
 
-            projectEditFacade.InsertNode(filePaths.Select(filePath =>
+            return ProjectSourceAdd(filePaths, (int)worldX, (int)worldY);
+        }
+
+        private int ProjectSourceAdd(List<string> filePaths, int x, int y)
+        {
+            // 범위 제한 및 그리드 스냅
+            var finalWidth = 100;
+            var finalHeight = 100;
+            var finalX = JassProjectSpecification.Snap(Math.Min(Math.Max(x, 0), projectEditFacade.GetProjectWidth() - finalWidth));
+            var finalY = JassProjectSpecification.Snap(Math.Min(Math.Max(y, 0), projectEditFacade.GetProjectHeight() - finalHeight));
+
+            return projectEditFacade.InsertNode(filePaths.Select(filePath =>
             {
                 return new ProjectEditFacade.NodeAddRequest()
                 {
-                    X = (int)worldX,
-                    Y = (int)worldY,
-                    Width = 100,
-                    Height = 100,
+                    X = finalX,
+                    Y = finalY,
+                    Width = finalWidth,
+                    Height = finalHeight,
                     SourceFilePath = filePath,
                     Image = null,
                 };

@@ -46,6 +46,18 @@
         public const int MaxProjectSize = 5000;
 
         /// <summary>
+        /// 어플리케이션에서 허용하는 최소 이동/크기 조정 거리 단위입니다.
+        /// </summary>
+        public const int SnapThreshold = 10;
+
+        /// <summary>
+        /// 어플리케이션에서 허용하는 최소 이동/크기 조정 거리 단위로 값을 정렬합니다.
+        /// </summary>
+        /// <param name="value">정렬할 값</param>
+        /// <returns>정렬된 값</returns>
+        public static int Snap(int value) => value / SnapThreshold * SnapThreshold;
+
+        /// <summary>
         /// 어플리케이션에서 허용하는 프로젝트 크기입니다.
         /// </summary>
         public static bool IsAllowedProjectSize(int width, int height) => width >= MinProjectSize && width <= MaxProjectSize && height >= MinProjectSize && height <= MaxProjectSize;

@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shell;
 using vJassMainJBlueprint.Utils;
+using vJassMainJBlueprint.V1.Config;
 using vJassMainJBlueprint.V1.ModelFacade;
 using vJassMainJBlueprint.V1.ProjectEditor.Elements;
 
@@ -12,6 +14,61 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 {
     partial class ProjectEditWorkspace
     {
+        private void OnFooterZoomGridDragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+            e.Handled = true;
+        }
+
+
+        private static readonly string[] separator = ["\r\n", "\n"];
+
+        private void OnFooterZoomGridDrop(object sender, DragEventArgs e)
+        {
+            // Text 형식으로 파일 경로가 전달될 수 있음
+            // e.g) VSCode에서 파일을 드래그 앤 드롭할 경우
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                try
+                {
+                    string filePathString = (string)e.Data.GetData(DataFormats.Text);
+
+                    if (string.IsNullOrWhiteSpace(filePathString)) return;
+
+                    string[] filePaths = filePathString.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (!filePaths.All(File.Exists)) return;
+
+                    var dropWorldPosition = e.GetPosition(FooterZoomGrid);
+
+                    var addedFileCount = ProjectSourceAdd([.. filePaths], (int)dropWorldPosition.X, (int)dropWorldPosition.Y);
+                    MessageText.Info($"{addedFileCount}개의 파일을 추가했습니다.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"텍스트로 파일 경로를 처리하는 중 오류가 발생했습니다: {ex.Message}");
+                }
+            }
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                try
+                {
+                    string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                    if (files.Length == 0) return;
+
+                    var dropWorldPosition = e.GetPosition(FooterZoomGrid);
+
+                    var addedFileCount = ProjectSourceAdd([.. files], (int)dropWorldPosition.X, (int)dropWorldPosition.Y);
+                    MessageText.Info($"{addedFileCount}개의 파일을 추가했습니다.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"파일을 추가하는 중 오류가 발생했습니다: {ex.Message}");
+                }
+            }
+        }
+
         private readonly Dictionary<long, bool> selectedNodeIds = [];
         private double selectionRectPoint1X = 0;
         private double selectionRectPoint1Y = 0;
@@ -217,7 +274,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             }
             else if (isDragging)
             {
-                const int gridSize = 10;
+                const int gridSize = JassProjectSpecification.SnapThreshold;
                 foreach (var item in lastMouseOffsets)
                 {
                     Point currentPosition = e.GetPosition(ZoomChild);
@@ -252,14 +309,14 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                             {
                                 int width = (int)(lastElementSize.X + deltaX);
                                 width = Math.Max(30, Math.Min((int)(FooterZoomGrid.Width - Canvas.GetLeft(item.Key)), width));
-                                item.Key.Width = width / 10 * 10;
+                                item.Key.Width = JassProjectSpecification.Snap(width);
                                 break;
                             }
                         case ResizeGripDirection.Bottom:
                             {
                                 int height = (int)(lastElementSize.Y + deltaY);
                                 height = Math.Max(30, Math.Min((int)(FooterZoomGrid.Height - Canvas.GetTop(item.Key)), height));
-                                item.Key.Height = height / 10 * 10;
+                                item.Key.Height = JassProjectSpecification.Snap(height);
                                 break;
                             }
                         case ResizeGripDirection.BottomRight:
@@ -268,8 +325,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                                 width = Math.Max(30, Math.Min((int)(FooterZoomGrid.Width - Canvas.GetLeft(item.Key)), width));
                                 int height = (int)(lastElementSize.Y + deltaY);
                                 height = Math.Max(30, Math.Min((int)(FooterZoomGrid.Height - Canvas.GetTop(item.Key)), height));
-                                item.Key.Width = width / 10 * 10;
-                                item.Key.Height = height / 10 * 10;
+                                item.Key.Width = JassProjectSpecification.Snap(width);
+                                item.Key.Height = JassProjectSpecification.Snap(height);
                             }
                             break;
                     }

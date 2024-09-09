@@ -80,7 +80,10 @@
                     </StackPanel.LayoutTransform>
 
                     <!-- 프로젝트 문서 대응 그리드 -->
-                    <Grid x:Name="FooterZoomGrid" Width="500" Height="500" Background="#1F1F1F" >
+                    <Grid x:Name="FooterZoomGrid" Width="500" Height="500" Background="#1F1F1F"
+                        AllowDrop="True"
+                        Drop="OnFooterZoomGridDrop"
+                        DragOver="OnFooterZoomGridDragOver">
 
                         <!-- 설계도 배경 요소 -->
                         <Border BorderBrush="#409AE1" BorderThickness="1">
