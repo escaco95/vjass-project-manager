@@ -100,6 +100,8 @@ namespace vJassMainJBlueprint.V1.ModelHelper
             project.Nodes
                 .Select(node => node.SourceFilePath)
                 .Where(path => path != null)
+                // 설계도 파일 중복 허용에 대한 방어 로직
+                .Distinct()
                 // J 파일이 아닌 경우 건너뜁니다.
                 .Where(path => Path.GetExtension(path) == ".j")
                 // C# 상대 경로 표기를 vJass Import 상대 경로 표기로 변경합니다. (절대 경로인 경우 변경 안 함)
