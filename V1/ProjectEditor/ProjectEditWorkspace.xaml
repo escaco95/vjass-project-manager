@@ -25,6 +25,10 @@
                 <MenuItem Header="저장(_S)" InputGestureText="Ctrl+S" Click="OnMenuFileSaveClick" />
                 <MenuItem Header="다른 이름으로 저장(_A)" InputGestureText="Ctrl+Shift+S" Click="OnMenuFileSaveAsClick" />
                 <Separator/>
+                <MenuItem x:Name="MenuFileRecent" Header="최근에 사용한 파일(_F)" >
+                    <MenuItem Header="(항목 없음)" IsEnabled="False" />
+                </MenuItem>
+                <Separator/>
                 <MenuItem Header="끝내기(_X)" InputGestureText="Alt+F4" Click="OnMenuFileExitClick" />
             </MenuItem>
             <MenuItem Header="편집(_E)">

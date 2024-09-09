@@ -1,9 +1,11 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.ModelFacade;
+using vJassMainJBlueprint.V1.ModelHelper;
 
 namespace vJassMainJBlueprint.V1.ProjectEditor
 {
@@ -70,6 +72,11 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 window.Title = "vJass Project Manager" + (e.OriginType == ProjectEditFacade.OriginType.Memory ? " - 새 프로젝트" : " - " + e.OriginFilePath) + (window.Title.Contains('*') ? "*" : "");
             });
+
+            if (e.OriginType == ProjectEditFacade.OriginType.File)
+            {
+                MenuItemRecentFileHelper.Touch(e.OriginFilePath);
+            }
         }
 
         private void OnProjectSaveRequiredChanged(ProjectEditFacade.ProjectOriginSaveRequireEventArgs e)
@@ -148,6 +155,19 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            MenuItemRecentFileHelper.Apply(Window.GetWindow(this), () => [MenuFileRecent], (filePath) =>
+            {
+                SafeAction(() =>
+                {
+                    if (HandleSaveChanges()) return;
+
+                    projectEditFacade.MakeNewProject(filePath, JassProjectReader.Read(filePath));
+                    ViewportResetDelayed();
+
+                    MessageText.Info($"{Path.GetFileName(filePath)} 프로젝트를 열었습니다.");
+                });
+            });
+
             // UserControl이 로드될 때 포커스 설정
             Keyboard.Focus(this);
 
