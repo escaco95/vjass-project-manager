@@ -10,15 +10,15 @@ namespace vJassMainJBlueprint.Utils
     {
         private string? Input { get; set; } = null;
 
-        public static string? Show(Window owner, string title = "입력", string message = "값을 입력하세요", string defaultValue = "")
+        public static string? Show(DependencyObject dependencyObject, string title = "입력", string message = "값을 입력하세요", string defaultValue = "")
         {
             InputBox inputBox = new(title, message, defaultValue)
             {
-                Owner = owner
+                Owner = Window.GetWindow(dependencyObject)
             };
             return inputBox.ShowDialog() == true ? inputBox.Input : null;
         }
-         
+
         private InputBox(string title, string message, string defaultValue)
         {
             InitializeComponent();

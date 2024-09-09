@@ -12,7 +12,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             string oldProjectName = projectEditFacade.GetProjectName();
 
-            if (InputBox.Show(Window.GetWindow(this), "프로젝트 이름 바꾸기", "새로운 프로젝트 이름을 입력하세요.", oldProjectName) is not string newProjectName) return;
+            if (InputBox.Show(this, "프로젝트 이름 바꾸기", "새로운 프로젝트 이름을 입력하세요.", oldProjectName) is not string newProjectName) return;
 
             if (projectEditFacade.UpdateProjectName(newProjectName))
             {
@@ -26,7 +26,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             string oldProjectAuthor = projectEditFacade.GetProjectAuthor();
 
-            if (InputBox.Show(Window.GetWindow(this), "프로젝트 저자 바꾸기", "새로운 프로젝트 저자를 입력하세요.", oldProjectAuthor) is not string newProjectAuthor) return;
+            if (InputBox.Show(this, "프로젝트 저자 바꾸기", "새로운 프로젝트 저자를 입력하세요.", oldProjectAuthor) is not string newProjectAuthor) return;
 
             if (projectEditFacade.UpdateProjectAuthor(newProjectAuthor))
             {
@@ -40,7 +40,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             string oldProjectSize = $"{projectEditFacade.GetProjectWidth()},{projectEditFacade.GetProjectHeight()}";
 
-            if (InputBox.Show(Window.GetWindow(this), "프로젝트 크기 바꾸기", "새로운 프로젝트 크기를 입력하세요.\n(가로,세로)", oldProjectSize) is not string newProjectSize) return;
+            if (InputBox.Show(this, "프로젝트 크기 바꾸기", "새로운 프로젝트 크기를 입력하세요.\n(가로,세로)", oldProjectSize) is not string newProjectSize) return;
 
             // 파싱 가능한 양식으로 입력했는지 검증
             if (newProjectSize.Split(',').Length != 2 || !int.TryParse(newProjectSize.Split(',')[0], out int newWidth) || !int.TryParse(newProjectSize.Split(',')[1], out int newHeight))
