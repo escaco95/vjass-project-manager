@@ -66,11 +66,19 @@ namespace vJassMainJBlueprint.Utils
             try
             {
                 var json = JsonSerializer.Serialize(config, jsonSerializerOptions);
-                File.WriteAllText(configFilePath, json);
+                File.WriteAllText(configFilePath + ".temp", json);
+                File.Replace(configFilePath + ".temp", configFilePath, null);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Failed to save window state: {ex.Message}");
+            }
+            finally
+            {
+                if (File.Exists(configFilePath + ".temp"))
+                {
+                    File.Delete(configFilePath + ".temp");
+                }
             }
         }
     }

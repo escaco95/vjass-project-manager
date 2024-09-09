@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Text.Json.Nodes;
 using vJassMainJBlueprint.V1.Config;
 using vJassMainJBlueprint.V1.Model;
@@ -50,12 +51,29 @@ namespace vJassMainJBlueprint.V1.ModelHelper
 
         public static void Write(JassProject project, string filePath)
         {
-            var json = VersionSpecification.VersionBuildActions[JassProjectSpecification.NewestVersion].Invoke(JassProjectSpecification.NewestVersion, project);
+            try
+            {
+                var json = VersionSpecification.VersionBuildActions[JassProjectSpecification.NewestVersion].Invoke(JassProjectSpecification.NewestVersion, project);
 
-            using var writer = new StreamWriter(filePath);
+                using (var writer = new StreamWriter(filePath + ".temp"))
+                {
+                    WriteJsonHeader(json, writer);
+                    WriteImportData(project, writer);
+                }
 
-            WriteJsonHeader(json, writer);
-            WriteImportData(project, writer);
+                File.Replace(filePath + ".temp", filePath, null);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to write project: {ex.Message}");
+            }
+            finally
+            {
+                if (File.Exists(filePath + ".temp"))
+                {
+                    File.Delete(filePath + ".temp");
+                }
+            }
         }
 
         private static void WriteJsonHeader(JsonObject json, StreamWriter writer)

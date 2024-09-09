@@ -51,11 +51,19 @@ namespace vJassMainJBlueprint.Utils
             try
             {
                 var json = JsonSerializer.Serialize(CachedRecentFilePath);
-                File.WriteAllText(RecentFilePath, json);
+                File.WriteAllText(RecentFilePath + ".temp", json);
+                File.Replace(RecentFilePath + ".temp", RecentFilePath, null);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Failed to save recent files: {ex.Message}");
+            }
+            finally
+            {
+                if (File.Exists(RecentFilePath + ".temp"))
+                {
+                    File.Delete(RecentFilePath + ".temp");
+                }
             }
         }
 
