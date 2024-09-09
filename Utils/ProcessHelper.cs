@@ -5,7 +5,7 @@ namespace vJassMainJBlueprint.Utils
 {
     public static class ProcessHelper
     {
-        public static void Open(string filePath)
+        public static void Open(Window owner, string filePath)
         {
             try
             {
@@ -13,7 +13,7 @@ namespace vJassMainJBlueprint.Utils
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"파일을 여는 도중 오류가 발생했습니다: {ex.Message}");
+                MessageBox.Show(owner, $"파일을 여는 도중 오류가 발생했습니다: {ex.Message}", "파일 열기");
             }
         }
     }

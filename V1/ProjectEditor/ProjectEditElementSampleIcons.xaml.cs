@@ -34,12 +34,12 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 image.MouseDown += (sender, e) =>
                 {
                     Clipboard.SetImage(image.Source as BitmapSource);
-                    MessageBox.Show("아이콘을 복사했습니다!", "샘플 아이콘", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(Window.GetWindow(this), "아이콘을 복사했습니다!", "샘플 아이콘", MessageBoxButton.OK, MessageBoxImage.Information);
                 };
 
                 RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
 
-                SampleIconFooter.Children.Add(image);
+                SampleIconContainer.Children.Add(image);
             }
         }
     }

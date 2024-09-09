@@ -166,7 +166,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             ViewportResetDelayed();
         }
 
-        private static void SafeAction(Action action)
+        private void SafeAction(Action action)
         {
             try
             {
@@ -174,7 +174,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Window.GetWindow(this), ex.Message, "오류", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

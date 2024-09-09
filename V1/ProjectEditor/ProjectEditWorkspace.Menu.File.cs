@@ -103,7 +103,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             if (projectEditFacade.OriginSaveRequired)
             {
-                switch (MessageBox.Show("저장되지 않은 변경사항이 있습니다. 저장하시겠습니까?", "저장", MessageBoxButton.YesNoCancel, MessageBoxImage.Question))
+                switch (MessageBox.Show(Window.GetWindow(this), "저장되지 않은 변경사항이 있습니다. 저장하시겠습니까?", "저장", MessageBoxButton.YesNoCancel, MessageBoxImage.Question))
                 {
                     case MessageBoxResult.Cancel:
                         return true;

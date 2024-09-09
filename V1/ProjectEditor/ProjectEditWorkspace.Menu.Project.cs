@@ -43,14 +43,14 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             // 파싱 가능한 양식으로 입력했는지 검증
             if (newProjectSize.Split(',').Length != 2 || !int.TryParse(newProjectSize.Split(',')[0], out int newWidth) || !int.TryParse(newProjectSize.Split(',')[1], out int newHeight))
             {
-                MessageBox.Show("쉼표로 구분되는 가로,세로 크기를 입력해야 합니다.", "프로젝트 크기 바꾸기", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Window.GetWindow(this), "쉼표로 구분되는 가로,세로 크기를 입력해야 합니다.", "프로젝트 크기 바꾸기", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             // 허용되는 크기인지 검증
             if (!JassProjectSpecification.IsAllowedProjectSize(newWidth, newHeight))
             {
-                MessageBox.Show($"허용되지 않는 프로젝트 크기입니다.\n(가로,세로) {JassProjectSpecification.MinProjectSize} 이상 {JassProjectSpecification.MaxProjectSize} 이하로 입력하세요.", "프로젝트 크기 바꾸기", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Window.GetWindow(this), $"허용되지 않는 프로젝트 크기입니다.\n(가로,세로) {JassProjectSpecification.MinProjectSize} 이상 {JassProjectSpecification.MaxProjectSize} 이하로 입력하세요.", "프로젝트 크기 바꾸기", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

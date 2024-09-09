@@ -37,7 +37,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                             .FirstOrDefault();
                         if (projectEditFacade.SelectNodeSourceFilePath(topMostNode?.SourceNodeID) is string sourceFilePath)
                         {
-                            ProcessHelper.Open(sourceFilePath);
+                            ProcessHelper.Open(Window.GetWindow(this), sourceFilePath);
                         }
                     }
                     break;

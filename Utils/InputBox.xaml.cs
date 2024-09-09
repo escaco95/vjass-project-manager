@@ -18,7 +18,7 @@ namespace vJassMainJBlueprint.Utils
             };
             return inputBox.ShowDialog() == true ? inputBox.Input : null;
         }
-
+         
         private InputBox(string title, string message, string defaultValue)
         {
             InitializeComponent();
