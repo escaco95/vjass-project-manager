@@ -73,11 +73,11 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 if (window.Title.Contains('*'))
                 {
-                    window.Title = $"{(e.OriginType == ProjectEditFacade.OriginType.Memory ? "새 프로젝트" : Path.GetFileName(e.OriginFilePath))}* - vJass Project Manager";
+                    window.Title = $"{(e.OriginType == ProjectEditFacade.OriginType.Memory ? "새 프로젝트" : Path.GetFileName(projectEditFacade.OriginFilePath))}* - vJass Project Manager";
                 }
                 else
                 {
-                    window.Title = $"{(e.OriginType == ProjectEditFacade.OriginType.Memory ? "새 프로젝트" : Path.GetFileName(e.OriginFilePath))} - vJass Project Manager";
+                    window.Title = $"{(e.OriginType == ProjectEditFacade.OriginType.Memory ? "새 프로젝트" : Path.GetFileName(projectEditFacade.OriginFilePath))} - vJass Project Manager";
                 }
             });
 

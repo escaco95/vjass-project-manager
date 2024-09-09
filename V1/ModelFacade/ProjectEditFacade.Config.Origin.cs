@@ -11,7 +11,7 @@
         public void UpdateOrigin(string filePath)
         {
             _originConfig.ResetToFile(filePath);
-            UpdateRequired?.Invoke(this, [new ProjectOriginUpdateEventArgs(_originConfig)]);
+            UpdateRequired?.Invoke(this, [new ProjectOriginUpdateEventArgs(_originConfig), new ProjectOriginSaveRequireEventArgs(_originConfig)]);
         }
 
         public void UpdateOriginSaveRequired(bool saveRequired)

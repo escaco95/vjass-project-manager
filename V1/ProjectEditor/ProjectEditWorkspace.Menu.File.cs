@@ -80,7 +80,6 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 {
                     JassProjectWriter.Write(projectEditFacade.GetProject(), filePath);
                     projectEditFacade.UpdateOrigin(filePath);
-                    projectEditFacade.UpdateOriginSaveRequired(false);
 
                     MessageText.Info($"{Path.GetFileName(filePath)} 파일로 저장했습니다.");
                 });
@@ -128,7 +127,6 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 {
                     JassProjectWriter.Write(projectEditFacade.GetProject(), filePath);
                     projectEditFacade.UpdateOrigin(filePath);
-                    projectEditFacade.UpdateOriginSaveRequired(false);
                     return false;
                 }
                 return true;
