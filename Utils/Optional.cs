@@ -69,7 +69,7 @@ namespace vJassMainJBlueprint.Utils
         /// <returns>An Optional containing the value if it satisfies the predicate, otherwise an empty Optional.</returns>
         public Optional<T> Filter(Predicate<T> predicate)
         {
-            return value == null || !predicate(value) ? Optional<T>.Empty : this;
+            return value == null || !predicate(value) ? Empty : this;
         }
 
         /// <summary>
