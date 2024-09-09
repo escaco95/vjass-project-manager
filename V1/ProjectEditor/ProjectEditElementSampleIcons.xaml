@@ -5,7 +5,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor"
              mc:Ignorable="d">
-    <ScrollViewer DockPanel.Dock="Right" Width="60" Background="Black">
+    <ScrollViewer DockPanel.Dock="Right" Width="60">
+        <ScrollViewer.Effect>
+            <DropShadowEffect Direction="180" />
+        </ScrollViewer.Effect>
+        <ScrollViewer.Background>
+            <VisualBrush TileMode="Tile" Viewport="0,0,16,16" ViewportUnits="Absolute" Viewbox="0,0,16,16" ViewboxUnits="Absolute">
+                <VisualBrush.Visual>
+                    <Canvas Width="16" Height="16">
+                        <Rectangle Fill="White" Width="8" Height="8" Canvas.Left="0" Canvas.Top="0"/>
+                        <Rectangle Fill="#BFBFBF" Width="8" Height="8" Canvas.Left="8" Canvas.Top="0"/>
+                        <Rectangle Fill="#BFBFBF" Width="8" Height="8" Canvas.Left="0" Canvas.Top="8"/>
+                        <Rectangle Fill="White" Width="8" Height="8" Canvas.Left="8" Canvas.Top="8"/>
+                    </Canvas>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </ScrollViewer.Background>
         <StackPanel x:Name="SampleIconContainer" VerticalAlignment="Top" Margin="0,10,0,0">
         </StackPanel>
     </ScrollViewer>
