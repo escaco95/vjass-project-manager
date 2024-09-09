@@ -90,12 +90,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         // 프로그램 종료 메서드
         private void OnMenuFileExitClick(object sender, RoutedEventArgs e)
         {
-            SafeAction(() =>
-            {
-                if (HandleSaveChanges()) return;
-
-                Application.Current.Shutdown();
-            });
+            // 이미 창 닫기 이벤트에서 저장 여부를 확인하므로 여기서는 확인하지 않음
+            Application.Current.Shutdown();
         }
 
         // 변경사항 저장 여부 확인 및 처리 메서드
