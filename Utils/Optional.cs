@@ -11,7 +11,7 @@ namespace vJassMainJBlueprint.Utils
         /// <summary>
         /// Gets an empty Optional instance.
         /// </summary>
-        public static Optional<T> Empty => new Optional<T>();
+        public static Optional<T> Empty => new();
 
         private readonly T? value;
 

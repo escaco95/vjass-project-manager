@@ -4,7 +4,7 @@ namespace vJassMainJBlueprint.V1.ModelHelper
 {
     internal class JassProjectSaveFileDialog
     {
-        private static readonly SaveFileDialog saveFileDialog = new SaveFileDialog
+        private static readonly SaveFileDialog saveFileDialog = new()
         {
             Filter = "vJass Script files (*.j)|*.j|All files (*.*)|*.*", // 파일 필터 설정
             Title = "파일 저장" // 대화상자 제목 설정

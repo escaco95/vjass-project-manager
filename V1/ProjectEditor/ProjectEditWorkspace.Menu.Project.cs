@@ -70,7 +70,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
         private void OnMenuProjectSourceAdd(object? sender, RoutedEventArgs? e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            OpenFileDialog openFileDialog = new()
             {
                 Multiselect = true,
                 Filter = "모든 파일|*.*",
@@ -85,7 +85,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
         private void OnMenuProjectSourceAddDirectory(object? sender, RoutedEventArgs? e)
         {
-            OpenFolderDialog openFolderDialog = new OpenFolderDialog
+            OpenFolderDialog openFolderDialog = new()
             {
                 Multiselect = true,
                 Title = "설계도에 추가할 디렉토리 모두 선택",

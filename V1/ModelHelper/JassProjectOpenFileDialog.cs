@@ -4,7 +4,7 @@ namespace vJassMainJBlueprint.V1.ModelHelper
 {
     internal class JassProjectOpenFileDialog
     {
-        private static readonly OpenFileDialog openFileDialog = new OpenFileDialog
+        private static readonly OpenFileDialog openFileDialog = new()
         {
             Filter = "vJass Script files (*.j)|*.j|All files (*.*)|*.*", // 파일 필터 설정
             Title = "파일 열기" // 대화상자 제목 설정
