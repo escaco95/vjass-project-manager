@@ -12,6 +12,7 @@ namespace vJassMainJBlueprint.V1
         {
             InitializeComponent();
             WindowOptimizeRenderHelper.OptimizeRender(this, ClientArea, FooterContainer);
+            WindowPreserveStateHelper.Apply(this, "config.window.json");
         }
     }
 }
