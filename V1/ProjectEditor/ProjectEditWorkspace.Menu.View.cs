@@ -7,6 +7,11 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 {
     partial class ProjectEditWorkspace
     {
+        private void OnMenuViewSubMenuOpened(object sender, RoutedEventArgs e)
+        {
+            MenuViewToolSampleIcon.IsChecked = ToolSampleIcons.Visibility == Visibility.Visible;
+        }
+
         private void OnMenuViewToolSampleIcon(object? sender, RoutedEventArgs? e)
         {
             if (ToolSampleIcons.Visibility == Visibility.Visible)

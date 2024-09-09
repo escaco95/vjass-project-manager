@@ -40,8 +40,8 @@
                 <MenuItem Header="클립보드로 이미지 복사" InputGestureText="Ctrl+Shift+C" Click="OnMenuEditCopyImage"/>
                 <MenuItem Header="클립보드에 복사된 이미지 적용" InputGestureText="Ctrl+Shift+V" Click="OnMenuEditPasteImage"/>
             </MenuItem>
-            <MenuItem Header="보기(_V)">
-                <MenuItem Header="샘플 아이콘 모음(_I)" InputGestureText="Ctrl+Alt+I" Click="OnMenuViewToolSampleIcon"/>
+            <MenuItem x:Name="MenuView" Header="보기(_V)" SubmenuOpened="OnMenuViewSubMenuOpened">
+                <MenuItem x:Name="MenuViewToolSampleIcon" Header="샘플 아이콘 모음(_I)" InputGestureText="Ctrl+Alt+I" Click="OnMenuViewToolSampleIcon"/>
                 <Separator/>
                 <MenuItem Header="모두 보이기(_A)" InputGestureText="Space" Click="OnMenuViewAllNodesClick"/>
             </MenuItem>
