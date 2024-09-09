@@ -16,7 +16,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 if (HandleSaveChanges()) return;
 
                 projectEditFacade.MakeNewProject();
-                ViewportResetDelayed();
+                ViewportResetDelayed(true);
 
                 MessageText.Info("새 프로젝트를 생성했습니다.");
             });
@@ -33,7 +33,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 .IfPresent(filePath =>
                 {
                     projectEditFacade.MakeNewProject(filePath, JassProjectReader.Read(filePath));
-                    ViewportResetDelayed();
+                    ViewportResetDelayed(true);
 
                     MessageText.Info($"{Path.GetFileName(filePath)} 프로젝트를 열었습니다.");
                 });
@@ -48,7 +48,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 if (HandleSaveChanges()) return;
 
                 projectEditFacade.MakeNewProject();
-                ViewportResetDelayed();
+                ViewportResetDelayed(true);
 
                 MessageText.Info("프로젝트를 닫았습니다.");
             });

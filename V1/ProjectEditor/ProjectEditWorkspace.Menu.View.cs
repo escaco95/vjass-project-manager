@@ -30,9 +30,13 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         }
 
         private DispatcherTimer? ViewportResetTimer = null;
+        private bool ViewportResetQuiet = false;
 
-        private void ViewportResetDelayed()
+        private void ViewportResetDelayed(bool quiet = false)
         {
+            // 침묵 여부 설정
+            ViewportResetQuiet = quiet;
+
             // 타이머가 없으면 생성
             if (ViewportResetTimer == null)
             {
@@ -42,7 +46,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     ViewportResetTimer.Stop();
                     Dispatcher.Invoke(() =>
                     {
-                        ViewportReset();
+                        ViewportReset(ViewportResetQuiet);
                     });
                 };
             }
@@ -51,7 +55,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             ViewportResetTimer.Start();
         }
 
-        private void ViewportReset()
+        private void ViewportReset(bool quiet)
         {
             // 부모의 실제 너비와 높이
             double parentWidth = ZoomParent.ActualWidth;
@@ -80,7 +84,11 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             Canvas.SetLeft(ZoomChild, (parentWidth - childWidth * nextZoomFactor) / 2);
             Canvas.SetTop(ZoomChild, (parentHeight - childHeight * nextZoomFactor) / 2);
 
-            MessageText.Info($"확대/축소 {(int)(nextZoomFactor * 100)}%");
+            // 확대/축소 비율 출력
+            if (!quiet)
+            {
+                MessageText.Info($"확대/축소 {(int)(nextZoomFactor * 100)}%");
+            }
         }
     }
 }

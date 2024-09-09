@@ -165,7 +165,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     if (HandleSaveChanges()) return;
 
                     projectEditFacade.MakeNewProject(filePath, JassProjectReader.Read(filePath));
-                    ViewportResetDelayed();
+                    ViewportResetDelayed(true);
 
                     MessageText.Info($"{Path.GetFileName(filePath)} 프로젝트를 열었습니다.");
                 });
@@ -194,7 +194,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 };
             });
             // 화면 초기화
-            ViewportResetDelayed();
+            ViewportResetDelayed(true);
         }
 
         private void SafeAction(Action action)
