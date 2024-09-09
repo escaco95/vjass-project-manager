@@ -168,5 +168,26 @@ namespace vJassMainJBlueprint.V1.ModelFacade
 
             return updateEventArgs.Count;
         }
+
+        public struct NodeAddRequest
+        {
+            public int X;
+            public int Y;
+            public int Width;
+            public int Height;
+            public string SourceFilePath;
+            public BitmapImage? Image;
+        }
+
+        public int InsertNode(List<NodeAddRequest> requests)
+        {
+            List<NodeConfigEntity> nodeConfigs = _nodeCollectionConfigs.Insert(requests);
+
+            List<NodeAddEventArgs> updateRequiredEventArgs = nodeConfigs.Select(nodeConfig => new NodeAddEventArgs(nodeConfig)).ToList();
+
+            UpdateRequired?.Invoke(this, [.. updateRequiredEventArgs]);
+
+            return nodeConfigs.Count;
+        }
     }
 }

@@ -95,9 +95,9 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             public string SourceFilePath { get; }
             public BitmapImage? Image { get; }
 
-            internal NodeAddEventArgs(long nodeHandleId, NodeConfigEntity nodeConfig)
+            internal NodeAddEventArgs(NodeConfigEntity nodeConfig)
             {
-                NodeHandleId = nodeHandleId;
+                NodeHandleId = nodeConfig.NodeHandleId;
                 X = nodeConfig.X;
                 Y = nodeConfig.Y;
                 Width = nodeConfig.Width;

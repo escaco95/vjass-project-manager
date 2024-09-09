@@ -55,9 +55,9 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             projectSetupEventArgs.Add(new ProjectNameChangedEventArgs(_projectConfig));
             projectSetupEventArgs.Add(new ProjectAuthorChangedEventArgs(_projectConfig));
             projectSetupEventArgs.Add(new ProjectResizeEventArgs(_projectConfig));
-            foreach (var item in _nodeCollectionConfigs.NodeConfigs)
+            foreach (var (_, nodeConfig) in _nodeCollectionConfigs.NodeConfigs)
             {
-                projectSetupEventArgs.Add(new NodeAddEventArgs(item.Key, item.Value));
+                projectSetupEventArgs.Add(new NodeAddEventArgs(nodeConfig));
             }
 
             UpdateRequired?.Invoke(this, [.. projectSetupEventArgs]);

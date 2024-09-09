@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.Config;
 using vJassMainJBlueprint.V1.Model;
 using static vJassMainJBlueprint.V1.Model.JassProject;
-using static vJassMainJBlueprint.V1.ModelFacade.ProjectEditFacade;
 
 namespace vJassMainJBlueprint.V1.ModelFacade
 {
@@ -97,6 +95,18 @@ namespace vJassMainJBlueprint.V1.ModelFacade
                 }
             }
 
+            public List<NodeConfigEntity> Insert(List<NodeAddRequest> requests)
+            {
+                return requests.Select(request =>
+                {
+                    NodeConfigEntity nodeConfig = new(NodeHandleId, request);
+                    NodeConfigs.Add(NodeHandleId, nodeConfig);
+                    Index(nodeConfig);
+                    NodeHandleId++;
+                    return nodeConfig;
+                }).ToList();
+            }
+
             public List<long> Remove(List<long> nodeHandleIds)
             {
                 return nodeHandleIds.Where(nodeHandleId =>
@@ -163,15 +173,37 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             public BitmapImage? Image { get; private set; } = image;
         }
 
-        internal class NodeConfigEntity(long nodeHandleId, JassProject.Node node)
+        internal class NodeConfigEntity
         {
-            public long NodeHandleId = nodeHandleId;
-            public int X = node.X;
-            public int Y = node.Y;
-            public int Width = node.Width;
-            public int Height = node.Height;
-            public string SourceFilePath = node.SourceFilePath;
-            public BitmapImage? Image = Base64Helper.Convert(node.ImageBase64String);
+            public long NodeHandleId;
+            public int X;
+            public int Y;
+            public int Width;
+            public int Height;
+            public string SourceFilePath;
+            public BitmapImage? Image;
+
+            internal NodeConfigEntity(long nodeHandleId, NodeAddRequest request)
+            {
+                NodeHandleId = nodeHandleId;
+                X = request.X;
+                Y = request.Y;
+                Width = request.Width;
+                Height = request.Height;
+                SourceFilePath = request.SourceFilePath;
+                Image = request.Image;
+            }
+
+            internal NodeConfigEntity(long nodeHandleId, Node node)
+            {
+                NodeHandleId = nodeHandleId;
+                X = node.X;
+                Y = node.Y;
+                Width = node.Width;
+                Height = node.Height;
+                SourceFilePath = node.SourceFilePath;
+                Image = Base64Helper.Convert(node.ImageBase64String);
+            }
 
             public JassProject.Node Cast()
             {

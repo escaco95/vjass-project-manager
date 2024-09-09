@@ -1,5 +1,9 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Win32;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.Config;
 using vJassMainJBlueprint.V1.ModelFacade;
@@ -62,6 +66,70 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
                 MessageText.Info($"프로젝트를 {newWidth}x{newHeight} 크기로 변경했습니다.");
             }
+        }
+
+        private void OnMenuProjectSourceAdd(object? sender, RoutedEventArgs? e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Multiselect = true,
+                Filter = "모든 파일|*.*",
+                Title = "설계도에 추가할 파일 모두 선택",
+            };
+
+            if (openFileDialog.ShowDialog() != true) return;
+            if (openFileDialog.FileNames.Length == 0) return;
+
+            ProjectSourceAdd([.. openFileDialog.FileNames]);
+        }
+
+        private void OnMenuProjectSourceAddDirectory(object? sender, RoutedEventArgs? e)
+        {
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog
+            {
+                Multiselect = true,
+                Title = "설계도에 추가할 디렉토리 모두 선택",
+            };
+
+            if (openFolderDialog.ShowDialog() != true) return;
+            if (openFolderDialog.FolderNames.Length == 0) return;
+
+            List<string> filePaths = [];
+            try
+            {
+                filePaths.AddRange(openFolderDialog.FolderNames.ToList().SelectMany(Directory.GetFiles).Distinct());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                MessageText.Error("디렉토리 파일 스캔 중 오류가 발생했습니다.");
+                return;
+            }
+
+            ProjectSourceAdd(filePaths);
+        }
+
+        private void ProjectSourceAdd(List<string> filePaths)
+        {
+            // 노드의 추가 위치는 화면 중앙
+            double zoomFactor = ((ScaleTransform)ZoomChild.LayoutTransform).ScaleX;
+            var viewX = ZoomParent.ActualWidth / 2 / zoomFactor;
+            var viewY = ZoomParent.ActualHeight / 2 / zoomFactor;
+            var worldX = - Canvas.GetLeft(ZoomChild) / zoomFactor + viewX;
+            var worldY = - Canvas.GetTop(ZoomChild) / zoomFactor + viewY;
+
+            projectEditFacade.InsertNode(filePaths.Select(filePath =>
+            {
+                return new ProjectEditFacade.NodeAddRequest()
+                {
+                    X = (int)worldX,
+                    Y = (int)worldY,
+                    Width = 100,
+                    Height = 100,
+                    SourceFilePath = filePath,
+                    Image = null,
+                };
+            }).ToList());
         }
 
         private void OnMenuProjectApplyRelativePaths(object? sender, RoutedEventArgs? e)

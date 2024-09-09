@@ -25,6 +25,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             { "edit.paster.nodeimage", new KeyBindingSettings(){ Key="V", Modifiers=ModifierKeys.Control | ModifierKeys.Shift} },
             { "view.tool.sampleicon",  new KeyBindingSettings(){ Key = "I", Modifiers = ModifierKeys.Control | ModifierKeys.Alt } },
             { "view.allnodes",  new KeyBindingSettings(){ Key = "Space", Modifiers = ModifierKeys.None } },
+            { "project.source.add",  new KeyBindingSettings(){ Key = "A", Modifiers = ModifierKeys.Control | ModifierKeys.Shift } },
+            { "project.source.adddir",  new KeyBindingSettings(){ Key = "D", Modifiers = ModifierKeys.Control | ModifierKeys.Shift } },
         };
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -88,6 +90,12 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     break;
                 case "view.allnodes":
                     OnMenuViewAllNodesClick(null, null);
+                    break;
+                case "project.source.add":
+                    OnMenuProjectSourceAdd(null, null);
+                    break;
+                case "project.source.adddir":
+                    OnMenuProjectSourceAddDirectory(null, null);
                     break;
             }
         }
