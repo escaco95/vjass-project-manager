@@ -60,33 +60,32 @@ namespace vJassMainJBlueprint.V1.ModelHelper
 
         private static void WriteJsonHeader(JsonObject json, StreamWriter writer)
         {
-            var jsonString = json.ToString();
-            var lines = jsonString.Split(Environment.NewLine);
-            foreach (var line in lines)
-            {
-                writer.WriteLine(JassProjectSpecification.JsonPrefix + line);
-            }
+            json.ToString()
+                // 줄 단위로 나눕니다
+                .Split(Environment.NewLine)
+                // 다른 데이터와 구분될 수 있도록 각 줄에 JassProjectSpecification.JsonPrefix를 추가합니다.
+                .Select(line => JassProjectSpecification.JsonPrefix + line)
+                // 파일에 작성합니다.
+                .ToList()
+                .ForEach(writer.WriteLine);
         }
 
         private static void WriteImportData(JassProject project, StreamWriter writer)
         {
-            foreach (var projectNode in project.Nodes)
-            {
-                if (projectNode.SourceFilePath == null || Path.GetExtension(projectNode.SourceFilePath) != ".j")
-                {
-                    continue;
-                }
-
-                // 상대 경로인 경우 선행되는 '..\' 를 제거
-                if (projectNode.SourceFilePath.StartsWith("..\\"))
-                {
-                    writer.WriteLine($"//! import \"{projectNode.SourceFilePath[3..].Replace('\\', '/')}\"");
-                }
-                else
-                {
-                    writer.WriteLine($"//! import \"{projectNode.SourceFilePath.Replace('\\', '/')}\"");
-                }
-            }
+            project.Nodes
+                .Select(node => node.SourceFilePath)
+                .Where(path => path != null)
+                // J 파일이 아닌 경우 건너뜁니다.
+                .Where(path => Path.GetExtension(path) == ".j")
+                // C# 상대 경로 표기를 vJass Import 상대 경로 표기로 변경합니다. (절대 경로인 경우 변경 안 함)
+                .Select(path => path.StartsWith("..\\") ? path[3..] : path)
+                // C# 디렉토리 구분자를 vJass Import 디렉토리 구분자로 변경합니다.
+                .Select(path => path.Replace('\\', '/'))
+                // vJass Import 구문을 작성합니다.
+                .Select(path => $"//! import \"{path}\"")
+                // 모든 절차를 정상 통과한 목록을 파일에 작성합니다.
+                .ToList()
+                .ForEach(writer.WriteLine);
         }
     }
 }
