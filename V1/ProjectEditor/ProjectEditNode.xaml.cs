@@ -47,10 +47,12 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             if (sourceFilePath.StartsWith("..\\"))
             {
                 ToolTip = sourceFilePath;
+                BorderAbsolutePathWarn.Visibility = System.Windows.Visibility.Collapsed;
             }
             else
             {
-                ToolTip = $"(절대 경로)\n{sourceFilePath}";
+                ToolTip = $"(절대 경로)\n{sourceFilePath}\n\n타인에게 설계도 공유 시 올바르게 동작하지 않을 수 있습니다.\n - 이 파일은 절대 경로로 지정되어 있습니다";
+                BorderAbsolutePathWarn.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
