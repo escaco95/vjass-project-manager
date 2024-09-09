@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.ModelFacade;
 using vJassMainJBlueprint.V1.ModelHelper;
+using vJassMainJBlueprint.V1.ProjectEditor.Elements;
 
 namespace vJassMainJBlueprint.V1.ProjectEditor
 {
@@ -16,7 +17,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
     {
         // 편집기 파사드
         private readonly ProjectEditFacade projectEditFacade = new();
-        private readonly Dictionary<long, ProjectEditNode> nodeElements = new();
+        private readonly Dictionary<long, ElemNode> nodeElements = [];
 
         public ProjectEditWorkspace()
         {
@@ -147,7 +148,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             Dispatcher.Invoke(() =>
             {
-                ProjectEditNode nodeElement = new(e);
+                ElemNode nodeElement = new(e);
                 // 논리 노드 추가
                 nodeElements.Add(e.NodeHandleId, nodeElement);
                 // 물리 노드 추가

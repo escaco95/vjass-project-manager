@@ -1,25 +1,23 @@
-﻿using System.Diagnostics;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using vJassMainJBlueprint.Utils;
 using static vJassMainJBlueprint.V1.ModelFacade.ProjectEditFacade;
 
-namespace vJassMainJBlueprint.V1.ProjectEditor
+namespace vJassMainJBlueprint.V1.ProjectEditor.Elements
 {
     /// <summary>
-    /// ProjectEditNode.xaml에 대한 상호 작용 논리
+    /// ElemNode.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ProjectEditNode : UserControl
+    public partial class ElemNode : UserControl
     {
 
         public long SourceNodeID { get; private set; }
 
-        public ProjectEditNode()
+        public ElemNode()
         {
             InitializeComponent();
         }
 
-        public ProjectEditNode(NodeAddEventArgs e) : this()
+        public ElemNode(NodeAddEventArgs e) : this()
         {
             SourceNodeID = e.NodeHandleId;
 

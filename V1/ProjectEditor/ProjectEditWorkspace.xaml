@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor"
-             xmlns:projecteditor="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor"
+             xmlns:projecteditor="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor" xmlns:elements="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Elements" xmlns:tools="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Tools" xmlns:overlays="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Overlays"
              mc:Ignorable="d" 
              d:DesignWidth="800"
              d:DesignHeight="450"
@@ -63,7 +63,7 @@
         </Menu>
 
         <!-- 아이콘 영역 -->
-        <projecteditor:ProjectEditToolSampleIcons x:Name="ToolSampleIcons" DockPanel.Dock="Right" Panel.ZIndex="1"/>
+        <tools:ToolSampleIcons x:Name="ToolSampleIcons" DockPanel.Dock="Right" Panel.ZIndex="1"/>
 
         <!-- 작업 영역 -->
         <Grid x:Name="WorkspaceGrid" 
@@ -137,7 +137,7 @@
                         <!-- 프로젝트 노드 컨테이너 -->
                         <Canvas x:Name="NodeContainer">
                             <!-- 격자 스냅 눈금자 커서 -->
-                            <projecteditor:ProjectEditElementSnapCursor x:Name="SnapCursor" Visibility="Collapsed"/>
+                            <elements:ElemSnapCursor x:Name="SnapCursor" Visibility="Collapsed"/>
                         </Canvas>
 
                     </Grid>
@@ -152,7 +152,7 @@
             
             <!-- 메시지 박스 -->
             <Border>
-                <projecteditor:ProjectEditElementMessageBox x:Name="MessageText" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" />
+                <overlays:OverlayMessageBox x:Name="MessageText" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" />
             </Border>
         </Grid>
     </DockPanel>

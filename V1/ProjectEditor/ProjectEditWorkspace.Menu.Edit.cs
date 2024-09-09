@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media.Imaging;
 using vJassMainJBlueprint.Utils;
+using vJassMainJBlueprint.V1.ProjectEditor.Elements;
 
 namespace vJassMainJBlueprint.V1.ProjectEditor
 {
@@ -24,7 +25,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
         private void OnMenuEditSelectAll(object? sender, RoutedEventArgs? e)
         {
-            SelectionAdd(NodeContainer.Children.OfType<ProjectEditNode>().Select(node => node.SourceNodeID).ToList());
+            SelectionAdd(NodeContainer.Children.OfType<ElemNode>().Select(node => node.SourceNodeID).ToList());
             
             if(selectedNodeIds.Count == 0)
             {

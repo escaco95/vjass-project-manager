@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shell;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.ModelFacade;
+using vJassMainJBlueprint.V1.ProjectEditor.Elements;
 
 namespace vJassMainJBlueprint.V1.ProjectEditor
 {
@@ -19,8 +20,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         private bool isResizing = false;
         private bool isDragging = false;
         private bool isVieportDragging = false;
-        private ProjectEditNode? editingNode = null;
-        private readonly Dictionary<ProjectEditNode, Point> lastMouseOffsets = [];
+        private ElemNode? editingNode = null;
+        private readonly Dictionary<ElemNode, Point> lastMouseOffsets = [];
         private Point lastMousePosition = new(0, 0);
         private ResizeGripDirection lastResizeDirection = ResizeGripDirection.None;
 
@@ -32,7 +33,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     {
                         Point mousePosition = e.GetPosition(ZoomChild);
                         // 마우스 위치와 겹치는 TopMost 노드 선택
-                        ProjectEditNode? topMostNode = NodeContainer.Children.OfType<ProjectEditNode>()
+                        ElemNode? topMostNode = NodeContainer.Children.OfType<ElemNode>()
                             .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
                             .OrderBy(node => Panel.GetZIndex(node))
                             .FirstOrDefault();
@@ -49,7 +50,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     {
                         Point mousePosition = e.GetPosition(ZoomChild);
                         // 마우스 위치와 겹치는 TopMost 노드 선택
-                        ProjectEditNode? topMostNode = NodeContainer.Children.OfType<ProjectEditNode>()
+                        ElemNode? topMostNode = NodeContainer.Children.OfType<ElemNode>()
                             .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
                             .OrderBy(node => Panel.GetZIndex(node))
                             .FirstOrDefault();
@@ -188,7 +189,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                         double height = Math.Abs(selectionRectPoint1Y - selectionRectPoint2Y);
                         Rect selectionRect = new(left, top, width, height);
                         // 선택 영역에 포함된 노드 선택
-                        SelectionAdd(NodeContainer.Children.OfType<ProjectEditNode>()
+                        SelectionAdd(NodeContainer.Children.OfType<ElemNode>()
                             .Where(node => selectionRect.IntersectsWith(new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight)))
                             .Where(node => !selectedNodeIds.ContainsKey(node.SourceNodeID))
                             .Select(node => node.SourceNodeID)
@@ -293,7 +294,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 Point mousePosition = e.GetPosition(ZoomChild);
                 // 마우스 위치와 겹치는 TopMost 노드 선택
-                ProjectEditNode? topMostNode = NodeContainer.Children.OfType<ProjectEditNode>()
+                ElemNode? topMostNode = NodeContainer.Children.OfType<ElemNode>()
                     .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
                     .OrderBy(node => Panel.GetZIndex(node))
                     .FirstOrDefault();
@@ -310,7 +311,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 Point mousePosition = e.GetPosition(ZoomChild);
                 // 마우스 위치와 겹치는 TopMost 노드 선택
-                ProjectEditNode? topMostNode = NodeContainer.Children.OfType<ProjectEditNode>()
+                ElemNode? topMostNode = NodeContainer.Children.OfType<ElemNode>()
                     .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
                     .OrderBy(node => Panel.GetZIndex(node))
                     .FirstOrDefault();

@@ -1,13 +1,13 @@
 ﻿using System.Windows.Controls;
 
-namespace vJassMainJBlueprint.V1.ProjectEditor
+namespace vJassMainJBlueprint.V1.ProjectEditor.Elements
 {
     /// <summary>
-    /// ProjectEditElementSnapCursor.xaml에 대한 상호 작용 논리
+    /// ElemSnapCursor.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ProjectEditElementSnapCursor : UserControl
+    public partial class ElemSnapCursor : UserControl
     {
-        public ProjectEditElementSnapCursor()
+        public ElemSnapCursor()
         {
             InitializeComponent();
         }

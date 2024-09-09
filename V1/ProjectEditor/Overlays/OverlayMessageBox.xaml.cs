@@ -4,18 +4,18 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using vJassMainJBlueprint.Utils;
 
-namespace vJassMainJBlueprint.V1.ProjectEditor
+namespace vJassMainJBlueprint.V1.ProjectEditor.Overlays
 {
     /// <summary>
-    /// ProjectEditElementMessageBox.xaml에 대한 상호 작용 논리
+    /// OverlayMessageBox.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ProjectEditElementMessageBox : UserControl
+    public partial class OverlayMessageBox : UserControl
     {
         private static readonly TimeSpan DefaultFadeDuration = TimeSpan.FromSeconds(0.5);
         private static readonly TimeSpan DefaultVisibleDuration = TimeSpan.FromSeconds(0.5);
         private readonly DispatcherTimer _collapseTimer = new();
 
-        public ProjectEditElementMessageBox()
+        public OverlayMessageBox()
         {
             InitializeComponent();
 

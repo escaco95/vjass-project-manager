@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="vJassMainJBlueprint.V1.ProjectEditor.ProjectEditElementMessageBox"
+﻿<UserControl x:Class="vJassMainJBlueprint.V1.ProjectEditor.Overlays.OverlayMessageBox"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor"
+             xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Overlays"
              mc:Ignorable="d" Loaded="UserControl_Loaded" >
     <Grid x:Name="BlockRoot" >
         <Grid x:Name="BlockBackdrop"  Background="White" Opacity="0.5">

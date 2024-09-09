@@ -4,15 +4,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.Config;
+using vJassMainJBlueprint.V1.ProjectEditor.Overlays;
 
-namespace vJassMainJBlueprint.V1.ProjectEditor
+namespace vJassMainJBlueprint.V1.ProjectEditor.Tools
 {
     /// <summary>
     /// ProjectEditElementSampleIcons.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ProjectEditToolSampleIcons : UserControl
+    public partial class ToolSampleIcons : UserControl
     {
-        public ProjectEditToolSampleIcons()
+        public ToolSampleIcons()
         {
             InitializeComponent();
             LoadSampleIcons();
@@ -45,7 +46,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             if (sender is Image image)
             {
                 Clipboard.SetImage(image.Source as BitmapSource);
-                Messenger.Send(new ProjectEditElementMessageBox.ShowActionMessage("아이콘을 복사했습니다"));
+                Messenger.Send(new OverlayMessageBox.ShowActionMessage("아이콘을 복사했습니다"));
             }
         }
     }
