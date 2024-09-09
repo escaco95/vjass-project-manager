@@ -1,7 +1,10 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.Config;
 using vJassMainJBlueprint.V1.Model;
+using static vJassMainJBlueprint.V1.Model.JassProject;
+using static vJassMainJBlueprint.V1.ModelFacade.ProjectEditFacade;
 
 namespace vJassMainJBlueprint.V1.ModelFacade
 {
@@ -72,7 +75,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
         {
             public long NodeHandleId = 0x100000;
             public Dictionary<long, NodeConfigEntity> NodeConfigs = [];
-            public Dictionary<string, NodeConfigEntity> IndexNodeSourceFile = [];
+            public Dictionary<string, List<NodeConfigEntity>> IndexNodeSourceFile = [];
 
             public void Reset()
             {
@@ -89,7 +92,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
                 {
                     NodeConfigEntity nodeConfig = new(NodeHandleId, node);
                     NodeConfigs.Add(NodeHandleId, nodeConfig);
-                    IndexNodeSourceFile.Add(node.SourceFilePath, nodeConfig);
+                    Index(nodeConfig);
                     NodeHandleId++;
                 }
             }
@@ -98,12 +101,10 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             {
                 return nodeHandleIds.Where(nodeHandleId =>
                 {
-                    if (NodeConfigs.Remove(nodeHandleId))
-                    {
-                        IndexNodeSourceFile.Remove(NodeConfigs[nodeHandleId].SourceFilePath);
-                        return true;
-                    }
-                    return false;
+                    if (!NodeConfigs.TryGetValue(nodeHandleId, out var nodeConfig)) return false;
+                    Deindex(nodeConfig);
+                    NodeConfigs.Remove(nodeConfig.NodeHandleId);
+                    return true;
                 }).ToList();
             }
 
@@ -123,13 +124,31 @@ namespace vJassMainJBlueprint.V1.ModelFacade
 
                 foreach (var sourceFilePath in sourceFilePaths.Distinct())
                 {
-                    if (IndexNodeSourceFile.TryGetValue(sourceFilePath, out var nodeConfig))
-                    {
-                        selectedNodes.Add(nodeConfig.Snapshot());
-                    }
+                    if (!IndexNodeSourceFile.TryGetValue(sourceFilePath, out var nodeConfigs)) continue;
+                    selectedNodes.AddRange(nodeConfigs.Select(nodeConfig => nodeConfig.Snapshot()));
                 }
-
                 return selectedNodes;
+            }
+
+            public void Index(NodeConfigEntity nodeConfig)
+            {
+                if (!IndexNodeSourceFile.TryGetValue(nodeConfig.SourceFilePath, out var nodeConfigs))
+                {
+                    nodeConfigs = [];
+                    IndexNodeSourceFile.Add(nodeConfig.SourceFilePath, nodeConfigs);
+                }
+                nodeConfigs.Add(nodeConfig);
+            }
+
+            public void Deindex(NodeConfigEntity nodeConfig)
+            {
+                var sourceFilePath = nodeConfig.SourceFilePath;
+                var nodeConfigs = IndexNodeSourceFile[sourceFilePath];
+                nodeConfigs.Remove(nodeConfig);
+                if (nodeConfigs.Count == 0)
+                {
+                    IndexNodeSourceFile.Remove(sourceFilePath);
+                }
             }
         }
 

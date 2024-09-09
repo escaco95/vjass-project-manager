@@ -4,10 +4,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
 {
     partial class ProjectEditFacade
     {
-        public NodeConfig? SelectNodeBySourceFilePath(string sourceFilePath)
-        {
-            return _nodeCollectionConfigs.SelectAllBySourceFilePathIn([sourceFilePath]).FirstOrDefault();
-        }
+        public List<NodeConfig> SelectNodeBySourceFilePath(string sourceFilePath) => _nodeCollectionConfigs.SelectAllBySourceFilePathIn([sourceFilePath]);
 
         public List<NodeConfig> SelectAllNodeBySourceFilePathIn(List<string> sourceFilePaths) => _nodeCollectionConfigs.SelectAllBySourceFilePathIn(sourceFilePaths);
 
@@ -19,7 +16,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             return nodeConfig.SourceFilePath;
         }
 
-        public List<string> SelectNodeSourceFilePaths() => _nodeCollectionConfigs.NodeConfigs.Values.Select(nodeConfig => nodeConfig.SourceFilePath).ToList();
+        public List<string> SelectNodeSourceFilePaths() => [.. _nodeCollectionConfigs.IndexNodeSourceFile.Keys];
 
         public BitmapImage? SelectNodeImage(long? nodeHandleId)
         {
@@ -138,7 +135,9 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             {
                 NodeConfigEntity selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[request.NodeHandleId];
 
+                _nodeCollectionConfigs.Deindex(selectedNodeConfig);
                 selectedNodeConfig.SourceFilePath = request.SourceFilePath;
+                _nodeCollectionConfigs.Index(selectedNodeConfig);
 
                 return new NodeSourceFilePathUpdateEventArgs(selectedNodeConfig);
             });

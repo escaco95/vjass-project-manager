@@ -82,11 +82,13 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             List<ProjectEditFacade.NodeSourceFilePathUpdateRequest> request = [];
             foreach (var (before, after) in changedPaths)
             {
-                if (projectEditFacade.SelectNodeBySourceFilePath(before) is not ProjectEditFacade.NodeConfig nodeConfig) continue;
-                request.Add(new ProjectEditFacade.NodeSourceFilePathUpdateRequest
+                projectEditFacade.SelectNodeBySourceFilePath(before).ForEach(nodeConfig =>
                 {
-                    NodeHandleId = nodeConfig.NodeHandleId,
-                    SourceFilePath = after,
+                    request.Add(new ProjectEditFacade.NodeSourceFilePathUpdateRequest
+                    {
+                        NodeHandleId = nodeConfig.NodeHandleId,
+                        SourceFilePath = after,
+                    });
                 });
             }
             int updatedNodesCount = projectEditFacade.UpdateNodeSourceFilePath(request);
