@@ -93,7 +93,7 @@
 
                         <Border>
                             <TextBlock x:Name="TextProjectName" 
-                                Text="동물원 디펜스" 
+                                Text="이름 없는 프로젝트" 
                                 FontSize="100"
                                 Padding="10"
                                 Foreground="White" 
@@ -104,7 +104,7 @@
                         </Border>
 
                         <Border>
-                            <TextBlock x:Name="TextProjectAuthor" Text="By 동동주" 
+                            <TextBlock x:Name="TextProjectAuthor" Text="저자 미상" 
                                 FontSize="50"
                                 Padding="20"
                                 Foreground="White" 
