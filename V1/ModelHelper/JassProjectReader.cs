@@ -13,7 +13,6 @@ namespace vJassMainJBlueprint.V1.ModelHelper
             public static readonly Dictionary<int, Func<JsonObject, JassProject>> VersionParseActions = new()
                 {
                     { 24090800, Version24090800 },
-                    { 24090700, Version24090700 },
                 };
 
             private static JassProject Version24090800(JsonObject json)
@@ -21,17 +20,6 @@ namespace vJassMainJBlueprint.V1.ModelHelper
                 return new JassProject(
                     LoadValue<string>(json, "name"),
                     LoadValue<string>(json, "author"),
-                    LoadValue<int>(json, "width"),
-                    LoadValue<int>(json, "height"),
-                    LoadItems(json)
-                );
-            }
-
-            private static JassProject Version24090700(JsonObject json)
-            {
-                return new JassProject(
-                    JassProjectSpecification.DefaultProjectName,
-                    JassProjectSpecification.DefaultProjectAuthor,
                     LoadValue<int>(json, "width"),
                     LoadValue<int>(json, "height"),
                     LoadItems(json)
