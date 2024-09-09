@@ -30,6 +30,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     VerticalAlignment = VerticalAlignment.Top,
                     Margin = new Thickness(0, 0, 0, 10),
                     Source = Base64Helper.Convert(sampleImageBase64String),
+                    ToolTip = "클릭하여 이미지를 클립보드에 복사합니다.",
                 };
 
                 image.MouseDown += Image_MouseDown;
