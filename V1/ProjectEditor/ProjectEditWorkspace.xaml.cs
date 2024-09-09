@@ -71,7 +71,14 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             Optional<Window>.Of(Window.GetWindow(this)).IfPresent(window =>
             {
-                window.Title = "vJass Project Manager" + (e.OriginType == ProjectEditFacade.OriginType.Memory ? " - 새 프로젝트" : " - " + e.OriginFilePath) + (window.Title.Contains('*') ? "*" : "");
+                if (window.Title.Contains('*'))
+                {
+                    window.Title = $"{(e.OriginType == ProjectEditFacade.OriginType.Memory ? "새 프로젝트" : Path.GetFileName(e.OriginFilePath))}* - vJass Project Manager";
+                }
+                else
+                {
+                    window.Title = $"{(e.OriginType == ProjectEditFacade.OriginType.Memory ? "새 프로젝트" : Path.GetFileName(e.OriginFilePath))} - vJass Project Manager";
+                }
             });
 
             if (e.OriginType == ProjectEditFacade.OriginType.File)
@@ -84,7 +91,14 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             Optional<Window>.Of(Window.GetWindow(this)).IfPresent(window =>
             {
-                window.Title = window.Title.Replace("*", "") + (e.SaveRequired ? "*" : "");
+                if (e.SaveRequired)
+                {
+                    window.Title = window.Title.Replace(" - vJass Project Manager", "* - vJass Project Manager");
+                }
+                else
+                {
+                    window.Title = window.Title.Replace("* - vJass Project Manager", " - vJass Project Manager");
+                }
             });
         }
 
