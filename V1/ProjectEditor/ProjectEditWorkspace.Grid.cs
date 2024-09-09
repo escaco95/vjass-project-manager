@@ -20,7 +20,6 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             e.Handled = true;
         }
 
-
         private static readonly string[] separator = ["\r\n", "\n"];
 
         private void OnFooterZoomGridDrop(object sender, DragEventArgs e)
@@ -69,31 +68,104 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             }
         }
 
-        private readonly Dictionary<long, bool> selectedNodeIds = [];
-        private double selectionRectPoint1X = 0;
-        private double selectionRectPoint1Y = 0;
-        private double selectionRectPoint2X = 0;
-        private double selectionRectPoint2Y = 0;
-        private bool isResizing = false;
-        private bool isDragging = false;
-        private bool isVieportDragging = false;
-        private ElemNode? editingNode = null;
-        private readonly Dictionary<ElemNode, Point> lastMouseOffsets = [];
-        private Point lastMousePosition = new(0, 0);
-        private ResizeGripDirection lastResizeDirection = ResizeGripDirection.None;
+        private readonly MouseInteractionState _mouseState = new();
+
+        internal class MouseInteractionState
+        {
+            private readonly Dictionary<long, bool> SelectedNodeIdIndexes = [];
+            private double SelectionRectPoint1X = 0;
+            private double SelectionRectPoint1Y = 0;
+            private double SelectionRectPoint2X = 0;
+            private double SelectionRectPoint2Y = 0;
+            internal bool IsSelecting = false;
+            internal bool IsResizing = false;
+            internal bool IsDragging = false;
+            internal bool IsVieportDragging = false;
+            internal ElemNode? EditingNode = null;
+            internal readonly Dictionary<ElemNode, Point> LastMouseOffsets = [];
+            internal Point LastMousePosition = new(0, 0);
+            internal ResizeGripDirection LastResizeDirection = ResizeGripDirection.None;
+
+            internal bool IsBusy => IsSelecting || IsResizing || IsDragging || IsVieportDragging;
+
+            internal bool SelectedNothing => SelectedNodeCount == 0;
+
+            internal bool SelectedSingle => SelectedNodeCount == 1;
+
+            internal bool SelectedMultiple => SelectedNodeCount > 1;
+
+            private int SelectedNodeCount => SelectedNodeIdIndexes.Count;
+
+            internal IEnumerable<long> SelectedNodeIds => [.. SelectedNodeIdIndexes.Keys];
+
+            internal void SelectionAdd(long nodeHandleId)
+            {
+                SelectedNodeIdIndexes.Add(nodeHandleId, true);
+            }
+
+            internal bool IsSelected(long nodeHandleId) => SelectedNodeIdIndexes.ContainsKey(nodeHandleId);
+
+            internal void SelectionClear()
+            {
+                SelectedNodeIdIndexes.Clear();
+            }
+
+            internal void SelectionStartPoint(Point point)
+            {
+                SelectionRectPoint1X = point.X;
+                SelectionRectPoint1Y = point.Y;
+                SelectionRectPoint2X = point.X;
+                SelectionRectPoint2Y = point.Y;
+            }
+
+            internal void SelectionEndPoint(Point point)
+            {
+                SelectionRectPoint2X = point.X;
+                SelectionRectPoint2Y = point.Y;
+            }
+
+            internal Rect SelectionBounds
+            {
+                get
+                {
+                    double left = Math.Min(SelectionRectPoint1X, SelectionRectPoint2X);
+                    double top = Math.Min(SelectionRectPoint1Y, SelectionRectPoint2Y);
+                    double width = Math.Abs(SelectionRectPoint1X - SelectionRectPoint2X);
+                    double height = Math.Abs(SelectionRectPoint1Y - SelectionRectPoint2Y);
+                    return new(left, top, width, height);
+                }
+            }
+        }
+        private ElemNode? GetTopMostNode(Point mousePosition)
+        {
+            HitTestResult hitResult = VisualTreeHelper.HitTest(NodeContainer, mousePosition);
+
+            return GetParentElemNode(hitResult?.VisualHit);
+        }
+        private static ElemNode? GetParentElemNode(DependencyObject? child)
+        {
+            // 현재 child가 null이거나 ElemNode일 때까지 반복
+            while (child != null && child is not ElemNode)
+            {
+                // 부모 요소 탐색
+                child = VisualTreeHelper.GetParent(child);
+            }
+
+            // ElemNode일 경우에만 반환
+            return child as ElemNode;
+        }
 
         private void OnGridMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (_mouseState.IsBusy) return;
+
             switch (e.ChangedButton)
             {
                 case MouseButton.Left:
                     {
                         Point mousePosition = e.GetPosition(ZoomChild);
                         // 마우스 위치와 겹치는 TopMost 노드 선택
-                        ElemNode? topMostNode = NodeContainer.Children.OfType<ElemNode>()
-                            .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
-                            .OrderBy(node => Panel.GetZIndex(node))
-                            .FirstOrDefault();
+                        ElemNode? topMostNode = GetTopMostNode(mousePosition);
                         if (projectEditFacade.SelectNodeSourceFilePath(topMostNode?.SourceNodeID) is string sourceFilePath)
                         {
                             // 상대 경로인 경우 문서 기준 절대 경로로 변환
@@ -107,14 +179,11 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     {
                         Point mousePosition = e.GetPosition(ZoomChild);
                         // 마우스 위치와 겹치는 TopMost 노드 선택
-                        ElemNode? topMostNode = NodeContainer.Children.OfType<ElemNode>()
-                            .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
-                            .OrderBy(node => Panel.GetZIndex(node))
-                            .FirstOrDefault();
+                        ElemNode? topMostNode = GetTopMostNode(mousePosition);
                         if (topMostNode is null)
                         {
-                            isVieportDragging = true;
-                            lastMousePosition = e.GetPosition(ZoomParent);
+                            _mouseState.IsVieportDragging = true;
+                            _mouseState.LastMousePosition = e.GetPosition(ZoomParent);
                             WorkspaceGrid.CaptureMouse(); // 마우스 캡처
 
                             // 찍은 좌표 노출
@@ -122,7 +191,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                             break;
                         }
                         // 선택되지 않은 노드를 클릭 시, 선택된 노드 초기화
-                        if (!selectedNodeIds.ContainsKey(topMostNode.SourceNodeID))
+                        if (!_mouseState.IsSelected(topMostNode.SourceNodeID))
                         {
                             SelectionClear();
                             SelectionAdd(topMostNode.SourceNodeID);
@@ -131,29 +200,29 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                         var resizeDirection = UIResizeHelper.GetResizeDirection(topMostNode, e.GetPosition(topMostNode));
                         if (resizeDirection == ResizeGripDirection.None)
                         {
-                            isDragging = true;
-                            editingNode = topMostNode;
-                            lastMouseOffsets.Clear();
-                            foreach (long selectedNodeHandleId in selectedNodeIds.Keys)
+                            _mouseState.IsDragging = true;
+                            _mouseState.EditingNode = topMostNode;
+                            _mouseState.LastMouseOffsets.Clear();
+                            foreach (long selectedNodeHandleId in _mouseState.SelectedNodeIds)
                             {
                                 var selectedNode = nodeElements[selectedNodeHandleId];
-                                lastMouseOffsets[selectedNode] = e.GetPosition(selectedNode);
+                                _mouseState.LastMouseOffsets[selectedNode] = e.GetPosition(selectedNode);
                             }
                             topMostNode.CaptureMouse(); // 마우스 캡처
-                            // 스냅 커서 표시
+                                                        // 스냅 커서 표시
                             SnapCursor.Visibility = Visibility.Visible;
                         }
                         else
                         {
-                            isResizing = true;
-                            editingNode = topMostNode;
-                            lastMousePosition = mousePosition;
-                            lastResizeDirection = resizeDirection;
-                            lastMouseOffsets.Clear();
-                            foreach (long selectedNodeHandleId in selectedNodeIds.Keys)
+                            _mouseState.IsResizing = true;
+                            _mouseState.EditingNode = topMostNode;
+                            _mouseState.LastMousePosition = mousePosition;
+                            _mouseState.LastResizeDirection = resizeDirection;
+                            _mouseState.LastMouseOffsets.Clear();
+                            foreach (long selectedNodeHandleId in _mouseState.SelectedNodeIds)
                             {
                                 var selectedNode = nodeElements[selectedNodeHandleId];
-                                lastMouseOffsets[selectedNode] = new Point(selectedNode.ActualWidth, selectedNode.ActualHeight);
+                                _mouseState.LastMouseOffsets[selectedNode] = new Point(selectedNode.ActualWidth, selectedNode.ActualHeight);
                             }
                             topMostNode.CaptureMouse(); // 마우스 캡처
                         }
@@ -161,19 +230,18 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     break;
                 case MouseButton.Right:
                     {
+                        _mouseState.IsSelecting = true;
                         // 마우스 좌클릭 시, 선택된 노드 초기화
-                        SelectionClear();
                         WorkspaceGrid.CaptureMouse();
+                        SelectionClear();
                         Point mousePosition = e.GetPosition(ZoomChild);
-                        selectionRectPoint1X = mousePosition.X;
-                        selectionRectPoint1Y = mousePosition.Y;
-                        selectionRectPoint2X = mousePosition.X;
-                        selectionRectPoint2Y = mousePosition.Y;
+                        _mouseState.SelectionStartPoint(mousePosition);
+                        Rect selectionBounds = _mouseState.SelectionBounds;
                         double zoomFactor = ((ScaleTransform)ZoomChild.LayoutTransform).ScaleX;
-                        Canvas.SetLeft(SelectionGrid, Canvas.GetLeft(ZoomChild) + selectionRectPoint1X * zoomFactor);
-                        Canvas.SetTop(SelectionGrid, Canvas.GetTop(ZoomChild) + selectionRectPoint1Y * zoomFactor);
-                        SelectionGrid.Width = 0;
-                        SelectionGrid.Height = 0;
+                        Canvas.SetLeft(SelectionGrid, Canvas.GetLeft(ZoomChild) + selectionBounds.Left * zoomFactor);
+                        Canvas.SetTop(SelectionGrid, Canvas.GetTop(ZoomChild) + selectionBounds.Top * zoomFactor);
+                        SelectionGrid.Width = selectionBounds.Width * zoomFactor;
+                        SelectionGrid.Height = selectionBounds.Height * zoomFactor;
                         SelectionGrid.Visibility = Visibility.Visible;
                     }
                     break;
@@ -186,10 +254,10 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 case MouseButton.Middle:
                     {
-                        if (isDragging)
+                        if (_mouseState.IsDragging)
                         {
                             projectEditFacade.UpdateNodePosition(
-                                selectedNodeIds.Keys
+                                _mouseState.SelectedNodeIds
                                     .Select(nodeHandleId => nodeElements[nodeHandleId])
                                     .Select(node =>
                                     new ProjectEditFacade.NodePositionUpdateRequest
@@ -199,19 +267,19 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                                         Y = (int)Canvas.GetTop(node),
                                     }).ToList());
                             projectEditFacade.UpdateOriginSaveRequired(true);
-                            editingNode?.ReleaseMouseCapture(); // 마우스 캡처 해제
-                            // 스냅 커서 숨김
+                            _mouseState.EditingNode?.ReleaseMouseCapture(); // 마우스 캡처 해제
+                                                                            // 스냅 커서 숨김
                             SnapCursor.Visibility = Visibility.Collapsed;
                             // 만약 하나의 객체만 선택되어 있었을 경우, 선택 해제
-                            if (selectedNodeIds.Count == 1)
+                            if (_mouseState.SelectedSingle)
                             {
                                 SelectionClear();
                             }
                         }
-                        else if (isResizing)
+                        else if (_mouseState.IsResizing)
                         {
                             projectEditFacade.UpdateNodeSize(
-                                selectedNodeIds.Keys
+                                _mouseState.SelectedNodeIds
                                     .Select(nodeHandleId => nodeElements[nodeHandleId])
                                     .Select(node =>
                                     new ProjectEditFacade.NodeSizeUpdateRequest
@@ -221,39 +289,36 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                                         Height = (int)node!.ActualHeight,
                                     }).ToList());
                             projectEditFacade.UpdateOriginSaveRequired(true);
-                            editingNode?.ReleaseMouseCapture(); // 마우스 캡처 해제
-                            // 만약 하나의 객체만 선택되어 있었을 경우, 선택 해제
-                            if (selectedNodeIds.Count == 1)
+                            _mouseState.EditingNode?.ReleaseMouseCapture(); // 마우스 캡처 해제
+                                                                            // 만약 하나의 객체만 선택되어 있었을 경우, 선택 해제
+                            if (_mouseState.SelectedSingle)
                             {
                                 SelectionClear();
                             }
                         }
-                        else if (isVieportDragging)
+                        else if (_mouseState.IsVieportDragging)
                         {
                             WorkspaceGrid.ReleaseMouseCapture(); // 마우스 캡처 해제
                         }
-                        isDragging = false;
-                        isResizing = false;
-                        isVieportDragging = false;
+                        _mouseState.IsDragging = false;
+                        _mouseState.IsResizing = false;
+                        _mouseState.IsVieportDragging = false;
                     }
                     break;
                 case MouseButton.Right:
                     {
                         // 마우스 선택 영역에 맞게 사각형 생성 (마우스 드래그 방향에 따라 Point1과 Point2를 조정)
-                        double left = Math.Min(selectionRectPoint1X, selectionRectPoint2X);
-                        double top = Math.Min(selectionRectPoint1Y, selectionRectPoint2Y);
-                        double width = Math.Abs(selectionRectPoint1X - selectionRectPoint2X);
-                        double height = Math.Abs(selectionRectPoint1Y - selectionRectPoint2Y);
-                        Rect selectionRect = new(left, top, width, height);
+                        Rect selectionRect = _mouseState.SelectionBounds;
                         // 선택 영역에 포함된 노드 선택
                         SelectionAdd(NodeContainer.Children.OfType<ElemNode>()
                             .Where(node => selectionRect.IntersectsWith(new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight)))
-                            .Where(node => !selectedNodeIds.ContainsKey(node.SourceNodeID))
+                            .Where(node => !_mouseState.IsSelected(node.SourceNodeID))
                             .Select(node => node.SourceNodeID)
                             .ToList());
                         // 마우스 좌클릭 해제 시, 마우스 캡쳐 해제
                         WorkspaceGrid.ReleaseMouseCapture();
                         SelectionGrid.Visibility = Visibility.Collapsed;
+                        _mouseState.IsSelecting = false;
                     }
                     break;
             }
@@ -261,49 +326,52 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
         private void OnGridMouseMove(object sender, MouseEventArgs e)
         {
-            if (isVieportDragging)
+            if (_mouseState.IsVieportDragging)
             {
                 Point currentPosition = e.GetPosition(ZoomParent);
 
                 Mouse.OverrideCursor = Cursors.ScrollAll;
 
-                Canvas.SetLeft(ZoomChild, Canvas.GetLeft(ZoomChild) - lastMousePosition.X + currentPosition.X);
-                Canvas.SetTop(ZoomChild, Canvas.GetTop(ZoomChild) - lastMousePosition.Y + currentPosition.Y);
+                Canvas.SetLeft(ZoomChild, Canvas.GetLeft(ZoomChild) - _mouseState.LastMousePosition.X + currentPosition.X);
+                Canvas.SetTop(ZoomChild, Canvas.GetTop(ZoomChild) - _mouseState.LastMousePosition.Y + currentPosition.Y);
 
-                lastMousePosition = currentPosition;
+                _mouseState.LastMousePosition = currentPosition;
             }
-            else if (isDragging)
+            else if (_mouseState.IsDragging)
             {
                 const int gridSize = JassProjectSpecification.SnapThreshold;
-                foreach (var item in lastMouseOffsets)
+                foreach (var (draggingNode, nodeDragOffset) in _mouseState.LastMouseOffsets)
                 {
                     Point currentPosition = e.GetPosition(ZoomChild);
                     // snap to grid (10x10 based on parent element offset)
-                    currentPosition.X = currentPosition.X - item.Value.X;
-                    currentPosition.Y = currentPosition.Y - item.Value.Y;
+                    currentPosition.X = currentPosition.X - nodeDragOffset.X;
+                    currentPosition.Y = currentPosition.Y - nodeDragOffset.Y;
                     // cap to parent element bounds
-                    currentPosition.X = Math.Max(0, Math.Min(NodeContainer.ActualWidth - item.Key.ActualWidth, currentPosition.X));
-                    currentPosition.Y = Math.Max(0, Math.Min(NodeContainer.ActualHeight - item.Key.ActualHeight, currentPosition.Y));
+                    currentPosition.X = Math.Max(0, Math.Min(NodeContainer.ActualWidth - draggingNode.ActualWidth, currentPosition.X));
+                    currentPosition.Y = Math.Max(0, Math.Min(NodeContainer.ActualHeight - draggingNode.ActualHeight, currentPosition.Y));
                     // snap to grid (10x10 based on parent element offset)
                     currentPosition.X = (int)(currentPosition.X / gridSize) * gridSize;
                     currentPosition.Y = (int)(currentPosition.Y / gridSize) * gridSize;
                     // 요소 이동
-                    Canvas.SetLeft(item.Key, currentPosition.X);
-                    Canvas.SetTop(item.Key, currentPosition.Y);
+                    Canvas.SetLeft(draggingNode, currentPosition.X);
+                    Canvas.SetTop(draggingNode, currentPosition.Y);
                     // 스냅 커서 이동
-                    SnapCursor.SetPosition(currentPosition.X, currentPosition.Y);
+                    if (draggingNode == _mouseState.EditingNode)
+                    {
+                        SnapCursor.SetPosition(currentPosition.X, currentPosition.Y);
+                    }
                 }
             }
-            else if (isResizing)
+            else if (_mouseState.IsResizing)
             {
                 Point currentMousePosition = e.GetPosition(ZoomChild);
-                int deltaX = (int)(currentMousePosition.X - lastMousePosition.X);
-                int deltaY = (int)(currentMousePosition.Y - lastMousePosition.Y);
-                foreach (var item in lastMouseOffsets)
+                int deltaX = (int)(currentMousePosition.X - _mouseState.LastMousePosition.X);
+                int deltaY = (int)(currentMousePosition.Y - _mouseState.LastMousePosition.Y);
+                foreach (var item in _mouseState.LastMouseOffsets)
                 {
                     var lastElementSize = item.Value;
                     // 요소 크기 조정
-                    switch (lastResizeDirection)
+                    switch (_mouseState.LastResizeDirection)
                     {
                         case ResizeGripDirection.Right:
                             {
@@ -332,22 +400,18 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     }
                 }
             }
-            else if (e.RightButton == MouseButtonState.Pressed)
+            else if (_mouseState.IsSelecting)
             {
                 Point mousePosition = e.GetPosition(ZoomChild);
-                selectionRectPoint2X = mousePosition.X;
-                selectionRectPoint2Y = mousePosition.Y;
-                double left = Math.Min(selectionRectPoint1X, selectionRectPoint2X);
-                double top = Math.Min(selectionRectPoint1Y, selectionRectPoint2Y);
-                double width = Math.Abs(selectionRectPoint1X - selectionRectPoint2X);
-                double height = Math.Abs(selectionRectPoint1Y - selectionRectPoint2Y);
+                _mouseState.SelectionEndPoint(mousePosition);
+                Rect selectionBounds = _mouseState.SelectionBounds;
                 double zoomFactor = ((ScaleTransform)ZoomChild.LayoutTransform).ScaleX;
-                Canvas.SetLeft(SelectionGrid, Canvas.GetLeft(ZoomChild) + left * zoomFactor);
-                Canvas.SetTop(SelectionGrid, Canvas.GetTop(ZoomChild) + top * zoomFactor);
-                SelectionGrid.Width = width * zoomFactor;
-                SelectionGrid.Height = height * zoomFactor;
+                Canvas.SetLeft(SelectionGrid, Canvas.GetLeft(ZoomChild) + selectionBounds.Left * zoomFactor);
+                Canvas.SetTop(SelectionGrid, Canvas.GetTop(ZoomChild) + selectionBounds.Top * zoomFactor);
+                SelectionGrid.Width = selectionBounds.Width * zoomFactor;
+                SelectionGrid.Height = selectionBounds.Height * zoomFactor;
             }
-            else if (selectedNodeIds.Count == 0)
+            else if (_mouseState.SelectedNothing)
             {
                 Point mousePosition = e.GetPosition(ZoomChild);
                 // 마우스 위치와 겹치는 TopMost 노드 선택
@@ -430,10 +494,10 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
         private void SelectionAdd(long nodeHandleId)
         {
-            if (selectedNodeIds.ContainsKey(nodeHandleId)) return;
+            if (_mouseState.IsSelected(nodeHandleId)) return;
 
             // 논리 선택 갱신
-            selectedNodeIds.Add(nodeHandleId, true);
+            _mouseState.SelectionAdd(nodeHandleId);
             // 비주얼 선택
             nodeElements[nodeHandleId].MarkAsSelected();
         }
@@ -441,9 +505,9 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         private void SelectionClear()
         {
             // 비주얼 선택 해제
-            selectedNodeIds.Keys.Select(nodeHandleId => nodeElements[nodeHandleId]).ToList().ForEach(node => node.MarkAsUnselected());
+            _mouseState.SelectedNodeIds.Select(nodeHandleId => nodeElements[nodeHandleId]).ToList().ForEach(node => node.MarkAsUnselected());
             // 논리 선택 초기화
-            selectedNodeIds.Clear();
+            _mouseState.SelectionClear();
         }
     }
 }
