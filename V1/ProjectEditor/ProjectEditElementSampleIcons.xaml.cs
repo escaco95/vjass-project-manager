@@ -15,9 +15,10 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         public ProjectEditElementSampleIcons()
         {
             InitializeComponent();
+            LoadSampleIcons();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void LoadSampleIcons()
         {
             foreach (var sampleImageBase64String in JassProjectSpecification.SampleImages)
             {
@@ -31,15 +32,19 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     Source = Base64Helper.Convert(sampleImageBase64String),
                 };
 
-                image.MouseDown += (sender, e) =>
-                {
-                    Clipboard.SetImage(image.Source as BitmapSource);
-                    MessageBox.Show(Window.GetWindow(this), "아이콘을 복사했습니다!", "샘플 아이콘", MessageBoxButton.OK, MessageBoxImage.Information);
-                };
-
+                image.MouseDown += Image_MouseDown;
                 RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
 
                 SampleIconContainer.Children.Add(image);
+            }
+        }
+
+        private void Image_MouseDown(object sender, RoutedEventArgs e)
+        {
+            if (sender is Image image)
+            {
+                Clipboard.SetImage(image.Source as BitmapSource);
+                Messenger.Send(new ProjectEditElementMessageBox.ShowActionMessage("아이콘을 복사했습니다"));
             }
         }
     }
