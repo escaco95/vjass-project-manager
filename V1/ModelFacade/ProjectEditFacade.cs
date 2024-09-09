@@ -71,7 +71,8 @@ namespace vJassMainJBlueprint.V1.ModelFacade
         internal class NodeCollectionConfig
         {
             public long NodeHandleId = 0x100000;
-            public Dictionary<long, NodeConfig> NodeConfigs = [];
+            public Dictionary<long, NodeConfigEntity> NodeConfigs = [];
+            public Dictionary<string, NodeConfigEntity> IndexNodeSourceFile = [];
 
             public void Reset()
             {
@@ -86,14 +87,24 @@ namespace vJassMainJBlueprint.V1.ModelFacade
 
                 foreach (var node in jassProject.Nodes)
                 {
-                    NodeConfigs.Add(NodeHandleId, new NodeConfig(NodeHandleId, node));
+                    NodeConfigEntity nodeConfig = new(NodeHandleId, node);
+                    NodeConfigs.Add(NodeHandleId, nodeConfig);
+                    IndexNodeSourceFile.Add(node.SourceFilePath, nodeConfig);
                     NodeHandleId++;
                 }
             }
 
             public List<long> Remove(List<long> nodeHandleIds)
             {
-                return nodeHandleIds.Where(NodeConfigs.Remove).ToList();
+                return nodeHandleIds.Where(nodeHandleId =>
+                {
+                    if (NodeConfigs.Remove(nodeHandleId))
+                    {
+                        IndexNodeSourceFile.Remove(NodeConfigs[nodeHandleId].SourceFilePath);
+                        return true;
+                    }
+                    return false;
+                }).ToList();
             }
 
             public List<long> Select(List<long> nodeHandleIds)
@@ -105,9 +116,35 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             {
                 return selectRequests.Where(selectReqeust => NodeConfigs.ContainsKey(selectReqeust.NodeHandleId)).ToList();
             }
+
+            public List<NodeConfig> SelectAllBySourceFilePathIn(List<string> sourceFilePaths)
+            {
+                var selectedNodes = new List<NodeConfig>();
+
+                foreach (var sourceFilePath in sourceFilePaths.Distinct())
+                {
+                    if (IndexNodeSourceFile.TryGetValue(sourceFilePath, out var nodeConfig))
+                    {
+                        selectedNodes.Add(nodeConfig.Snapshot());
+                    }
+                }
+
+                return selectedNodes;
+            }
         }
 
-        internal class NodeConfig(long nodeHandleId, JassProject.Node node)
+        public class NodeConfig(long nodeHandleId, int x, int y, int width, int height, string sourceFilePath, BitmapImage? image)
+        {
+            public long NodeHandleId { get; private set; } = nodeHandleId;
+            public int X { get; private set; } = x;
+            public int Y { get; private set; } = y;
+            public int Width { get; private set; } = width;
+            public int Height { get; private set; } = height;
+            public string SourceFilePath { get; private set; } = sourceFilePath;
+            public BitmapImage? Image { get; private set; } = image;
+        }
+
+        internal class NodeConfigEntity(long nodeHandleId, JassProject.Node node)
         {
             public long NodeHandleId = nodeHandleId;
             public int X = node.X;
@@ -120,6 +157,11 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             public JassProject.Node Cast()
             {
                 return new JassProject.Node(X, Y, Width, Height, SourceFilePath, Base64Helper.Convert(Image));
+            }
+
+            public NodeConfig Snapshot()
+            {
+                return new NodeConfig(NodeHandleId, X, Y, Width, Height, SourceFilePath, Image);
             }
         }
     }

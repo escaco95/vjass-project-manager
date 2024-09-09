@@ -76,7 +76,16 @@ namespace vJassMainJBlueprint.V1.ModelHelper
                 {
                     continue;
                 }
-                writer.WriteLine($"//! import \"{projectNode.SourceFilePath.Replace('\\', '/')}\"");
+
+                // 상대 경로인 경우 선행되는 '..\' 를 제거
+                if (projectNode.SourceFilePath.StartsWith("..\\"))
+                {
+                    writer.WriteLine($"//! import \"{projectNode.SourceFilePath[3..].Replace('\\', '/')}\"");
+                }
+                else
+                {
+                    writer.WriteLine($"//! import \"{projectNode.SourceFilePath.Replace('\\', '/')}\"");
+                }
             }
         }
     }

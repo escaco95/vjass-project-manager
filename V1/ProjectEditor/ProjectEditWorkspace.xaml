@@ -42,10 +42,18 @@
                 <MenuItem Header="모두 보이기(_A)" InputGestureText="Space" Click="OnMenuViewAllNodesClick"/>
             </MenuItem>
             <MenuItem Header="프로젝트(_P)">
-                <MenuItem Header="프로젝트 이름 바꾸기(_M)..." Click="OnMenuProjectChangeName"/>
-                <MenuItem Header="프로젝트 저자 바꾸기(_A)..." Click="OnMenuProjectChangeAuthor"/>
+                <MenuItem Header="이름 바꾸기(_M)..." Click="OnMenuProjectChangeName"/>
+                <MenuItem Header="저자 바꾸기(_A)..." Click="OnMenuProjectChangeAuthor"/>
                 <Separator/>
-                <MenuItem Header="프로젝트 설계도 크기 바꾸기(_R)..." Click="OnMenuProjectChangeSize"/>
+                <MenuItem Header="프로젝트 설계도 크기 바꾸기(_S)..." Click="OnMenuProjectChangeSize"/>
+                <Separator/>
+                <MenuItem Header="모든 노드를 상대 경로로 변경(_R)..." Click="OnMenuProjectApplyRelativePaths"/>
+            </MenuItem>
+            <MenuItem Header="설계도(_S)">
+                <!-- TODO -->
+                <MenuItem Header="새 파일 추가(_W)..." InputGestureText="Ctrl+Shift+A" />
+                <!-- TODO -->
+                <MenuItem Header="폴더 단위 추가(_G)..." InputGestureText="Ctrl+Shift+D" />
             </MenuItem>
         </Menu>
 

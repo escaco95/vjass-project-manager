@@ -16,6 +16,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             NODE_ADD,
             NODE_REMOVE,
             NODE_BOUND_UPDATE,
+            NODE_SOURCE_FILE_PATH_UPDATE,
             NODE_IMAGE_UPDATE,
         }
 
@@ -94,7 +95,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             public string SourceFilePath { get; }
             public BitmapImage? Image { get; }
 
-            internal NodeAddEventArgs(long nodeHandleId, NodeConfig nodeConfig)
+            internal NodeAddEventArgs(long nodeHandleId, NodeConfigEntity nodeConfig)
             {
                 NodeHandleId = nodeHandleId;
                 X = nodeConfig.X;
@@ -121,7 +122,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             public int Width { get; }
             public int Height { get; }
 
-            internal NodeBoundUpdateEventArgs(NodeConfig nodeConfig)
+            internal NodeBoundUpdateEventArgs(NodeConfigEntity nodeConfig)
             {
                 NodeHandleId = nodeConfig.NodeHandleId;
                 X = nodeConfig.X;
@@ -137,10 +138,23 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             public long NodeHandleId { get; }
             public BitmapImage? Image { get; }
 
-            internal NodeImageUpdateEventArgs(NodeConfig nodeConfig)
+            internal NodeImageUpdateEventArgs(NodeConfigEntity nodeConfig)
             {
                 NodeHandleId = nodeConfig.NodeHandleId;
                 Image = nodeConfig.Image;
+            }
+        }
+
+        public readonly struct NodeSourceFilePathUpdateEventArgs : IUpdateRequiredEventArgs
+        {
+            public EventType EventType { get; } = EventType.NODE_SOURCE_FILE_PATH_UPDATE;
+            public long NodeHandleId { get; }
+            public string SourceFilePath { get; }
+
+            internal NodeSourceFilePathUpdateEventArgs(NodeConfigEntity nodeConfig)
+            {
+                NodeHandleId = nodeConfig.NodeHandleId;
+                SourceFilePath = nodeConfig.SourceFilePath;
             }
         }
 

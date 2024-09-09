@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -33,11 +34,14 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                         // 마우스 위치와 겹치는 TopMost 노드 선택
                         ProjectEditNode? topMostNode = NodeContainer.Children.OfType<ProjectEditNode>()
                             .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
-                            .OrderBy(node => Canvas.GetZIndex(node))
+                            .OrderBy(node => Panel.GetZIndex(node))
                             .FirstOrDefault();
                         if (projectEditFacade.SelectNodeSourceFilePath(topMostNode?.SourceNodeID) is string sourceFilePath)
                         {
-                            ProcessHelper.Open(Window.GetWindow(this), sourceFilePath);
+                            // 상대 경로인 경우 문서 기준 절대 경로로 변환
+                            string absoluteSourceFilePath = PathHelper.ConvertToAbsolutePath(projectEditFacade.OriginFilePath, sourceFilePath);
+                            Debug.WriteLine($"Open: {absoluteSourceFilePath}");
+                            ProcessHelper.Open(Window.GetWindow(this), absoluteSourceFilePath);
                         }
                     }
                     break;
@@ -47,7 +51,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                         // 마우스 위치와 겹치는 TopMost 노드 선택
                         ProjectEditNode? topMostNode = NodeContainer.Children.OfType<ProjectEditNode>()
                             .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
-                            .OrderBy(node => Canvas.GetZIndex(node))
+                            .OrderBy(node => Panel.GetZIndex(node))
                             .FirstOrDefault();
                         if (topMostNode is null)
                         {
@@ -291,7 +295,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 // 마우스 위치와 겹치는 TopMost 노드 선택
                 ProjectEditNode? topMostNode = NodeContainer.Children.OfType<ProjectEditNode>()
                     .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
-                    .OrderBy(node => Canvas.GetZIndex(node))
+                    .OrderBy(node => Panel.GetZIndex(node))
                     .FirstOrDefault();
                 if (topMostNode is null)
                 {
@@ -308,7 +312,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 // 마우스 위치와 겹치는 TopMost 노드 선택
                 ProjectEditNode? topMostNode = NodeContainer.Children.OfType<ProjectEditNode>()
                     .Where(node => new Rect(Canvas.GetLeft(node), Canvas.GetTop(node), node.ActualWidth, node.ActualHeight).Contains(mousePosition))
-                    .OrderBy(node => Canvas.GetZIndex(node))
+                    .OrderBy(node => Panel.GetZIndex(node))
                     .FirstOrDefault();
                 if (topMostNode is null)
                 {

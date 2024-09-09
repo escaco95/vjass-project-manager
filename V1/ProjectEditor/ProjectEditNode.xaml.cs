@@ -24,12 +24,13 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             SourceNodeID = e.NodeHandleId;
 
             UpdateBounds(e.X, e.Y, e.Width, e.Height);
+            UpdateSourceFilePath(e.SourceFilePath);
             UpdateImage(e.Image);
-
-            ToolTip = e.SourceFilePath;
         }
 
         public void UpdateNode(NodeBoundUpdateEventArgs e) => UpdateBounds(e.X, e.Y, e.Width, e.Height);
+
+        public void UpdateNode(NodeSourceFilePathUpdateEventArgs e) => UpdateSourceFilePath(e.SourceFilePath);
 
         public void UpdateNode(NodeImageUpdateEventArgs e) => UpdateImage(e.Image);
 
@@ -39,6 +40,18 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             Canvas.SetTop(this, y);
             Width = width;
             Height = height;
+        }
+
+        private void UpdateSourceFilePath(string sourceFilePath)
+        {
+            if (sourceFilePath.StartsWith("..\\"))
+            {
+                ToolTip = sourceFilePath;
+            }
+            else
+            {
+                ToolTip = $"(절대 경로)\n{sourceFilePath}";
+            }
         }
 
         private void UpdateImage(BitmapImage? image)

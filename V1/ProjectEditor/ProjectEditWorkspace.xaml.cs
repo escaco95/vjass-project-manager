@@ -54,6 +54,9 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     case ProjectEditFacade.EventType.NODE_BOUND_UPDATE:
                         OnProjectNodeBoundChanged((ProjectEditFacade.NodeBoundUpdateEventArgs)arg);
                         break;
+                    case ProjectEditFacade.EventType.NODE_SOURCE_FILE_PATH_UPDATE:
+                        OnProjectNodeSourceFilePathChanged((ProjectEditFacade.NodeSourceFilePathUpdateEventArgs)arg);
+                        break;
                     case ProjectEditFacade.EventType.NODE_IMAGE_UPDATE:
                         OnProjectNodeImageChanged((ProjectEditFacade.NodeImageUpdateEventArgs)arg);
                         break;
@@ -103,6 +106,11 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         }
 
         private void OnProjectNodeBoundChanged(ProjectEditFacade.NodeBoundUpdateEventArgs e)
+        {
+            Dispatcher.Invoke(() => { nodeElements[e.NodeHandleId].UpdateNode(e); });
+        }
+
+        private void OnProjectNodeSourceFilePathChanged(ProjectEditFacade.NodeSourceFilePathUpdateEventArgs e)
         {
             Dispatcher.Invoke(() => { nodeElements[e.NodeHandleId].UpdateNode(e); });
         }

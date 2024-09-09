@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.Config;
+using vJassMainJBlueprint.V1.ModelFacade;
 
 namespace vJassMainJBlueprint.V1.ProjectEditor
 {
@@ -60,6 +62,37 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
                 MessageText.Info($"프로젝트를 {newWidth}x{newHeight} 크기로 변경했습니다.");
             }
+        }
+
+        private void OnMenuProjectApplyRelativePaths(object? sender, RoutedEventArgs? e)
+        {
+            // 만약 프로젝트가 파일로 저장되지 않았다면 경로를 적용할 수 없음
+            if (projectEditFacade.Origin != ProjectEditFacade.OriginType.File)
+            {
+                MessageText.Warn("프로젝트가 파일로 저장되지 않았습니다.");
+                return;
+            }
+            var changedPaths = PathHelper.ConvertToRelativePaths(projectEditFacade.OriginFilePath, projectEditFacade.SelectNodeSourceFilePaths());
+            if (changedPaths.Count == 0)
+            {
+                MessageText.Info("적용 가능한 모든 노드가 이미 상대 경로입니다.");
+                return;
+            }
+
+            List<ProjectEditFacade.NodeSourceFilePathUpdateRequest> request = [];
+            foreach (var (before, after) in changedPaths)
+            {
+                if (projectEditFacade.SelectNodeBySourceFilePath(before) is not ProjectEditFacade.NodeConfig nodeConfig) continue;
+                request.Add(new ProjectEditFacade.NodeSourceFilePathUpdateRequest
+                {
+                    NodeHandleId = nodeConfig.NodeHandleId,
+                    SourceFilePath = after,
+                });
+            }
+            int updatedNodesCount = projectEditFacade.UpdateNodeSourceFilePath(request);
+            projectEditFacade.UpdateOriginSaveRequired(true);
+
+            MessageText.Info($"{updatedNodesCount} 노드를 상대 경로로 변경했습니다.");
         }
     }
 }

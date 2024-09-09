@@ -4,18 +4,27 @@ namespace vJassMainJBlueprint.V1.ModelFacade
 {
     partial class ProjectEditFacade
     {
+        public NodeConfig? SelectNodeBySourceFilePath(string sourceFilePath)
+        {
+            return _nodeCollectionConfigs.SelectAllBySourceFilePathIn([sourceFilePath]).FirstOrDefault();
+        }
+
+        public List<NodeConfig> SelectAllNodeBySourceFilePathIn(List<string> sourceFilePaths) => _nodeCollectionConfigs.SelectAllBySourceFilePathIn(sourceFilePaths);
+
         public string? SelectNodeSourceFilePath(long? nodeHandleId)
         {
             if (!nodeHandleId.HasValue) return null;
-            if (!_nodeCollectionConfigs.NodeConfigs.TryGetValue(nodeHandleId.Value, out NodeConfig? nodeConfig)) return null;
+            if (!_nodeCollectionConfigs.NodeConfigs.TryGetValue(nodeHandleId.Value, out NodeConfigEntity? nodeConfig)) return null;
 
             return nodeConfig.SourceFilePath;
         }
 
+        public List<string> SelectNodeSourceFilePaths() => _nodeCollectionConfigs.NodeConfigs.Values.Select(nodeConfig => nodeConfig.SourceFilePath).ToList();
+
         public BitmapImage? SelectNodeImage(long? nodeHandleId)
         {
             if (!nodeHandleId.HasValue) return null;
-            if (!_nodeCollectionConfigs.NodeConfigs.TryGetValue(nodeHandleId.Value, out NodeConfig? nodeConfig)) return null;
+            if (!_nodeCollectionConfigs.NodeConfigs.TryGetValue(nodeHandleId.Value, out NodeConfigEntity? nodeConfig)) return null;
 
             return nodeConfig.Image;
         }
@@ -50,7 +59,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
         {
             UpdateNode(requests, (request) =>
             {
-                NodeConfig selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[request.NodeHandleId];
+                NodeConfigEntity selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[request.NodeHandleId];
 
                 selectedNodeConfig.X = request.X;
                 selectedNodeConfig.Y = request.Y;
@@ -72,7 +81,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
         {
             UpdateNode(requests, (request) =>
             {
-                NodeConfig selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[request.NodeHandleId];
+                NodeConfigEntity selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[request.NodeHandleId];
 
                 selectedNodeConfig.Width = request.Width;
                 selectedNodeConfig.Height = request.Height;
@@ -93,7 +102,7 @@ namespace vJassMainJBlueprint.V1.ModelFacade
         {
             UpdateNode(requests, (request) =>
             {
-                NodeConfig selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[request.NodeHandleId];
+                NodeConfigEntity selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[request.NodeHandleId];
 
                 selectedNodeConfig.Image = request.Image;
 
@@ -105,31 +114,60 @@ namespace vJassMainJBlueprint.V1.ModelFacade
 
         public void UpdateNodeImage(List<long> nodeHandleIds, BitmapImage? image)
         {
-            List<long> selectedNodeIds = _nodeCollectionConfigs.Select(nodeHandleIds);
-
-            if (selectedNodeIds.Count == 0) return;
-
-            List<NodeImageUpdateEventArgs> updateEventArgs = selectedNodeIds.Select(nodeHandleId =>
+            UpdateNode(nodeHandleIds, (nodeHandleId) =>
             {
-                NodeConfig selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[nodeHandleId];
+                NodeConfigEntity selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[nodeHandleId];
 
                 selectedNodeConfig.Image = image;
 
                 return new NodeImageUpdateEventArgs(selectedNodeConfig);
-            }).ToList();
-
-            UpdateRequired?.Invoke(this, [.. updateEventArgs]);
+            });
         }
 
-        private void UpdateNode<T, A>(List<T> requests, Func<T, A> requestFunc) where T : INodeSelectRequest where A : IUpdateRequiredEventArgs
+        public struct NodeSourceFilePathUpdateRequest : INodeSelectRequest
+        {
+            public long NodeHandleId { get; set; }
+            public string SourceFilePath;
+        }
+
+        public int UpdateNodeSourceFilePath(NodeSourceFilePathUpdateRequest request) => UpdateNodeSourceFilePath([request]);
+
+        public int UpdateNodeSourceFilePath(List<NodeSourceFilePathUpdateRequest> requests)
+        {
+            return UpdateNode(requests, (request) =>
+            {
+                NodeConfigEntity selectedNodeConfig = _nodeCollectionConfigs.NodeConfigs[request.NodeHandleId];
+
+                selectedNodeConfig.SourceFilePath = request.SourceFilePath;
+
+                return new NodeSourceFilePathUpdateEventArgs(selectedNodeConfig);
+            });
+        }
+
+        private int UpdateNode<A>(List<long> nodeHandleIds, Func<long, A> requestFunc) where A : IUpdateRequiredEventArgs
+        {
+            List<long> selectedNodeIds = _nodeCollectionConfigs.Select(nodeHandleIds);
+
+            if (selectedNodeIds.Count == 0) return 0;
+
+            List<A> updateEventArgs = selectedNodeIds.Select(requestFunc.Invoke).ToList();
+
+            UpdateRequired?.Invoke(this, [.. updateEventArgs]);
+
+            return updateEventArgs.Count;
+        }
+
+        private int UpdateNode<T, A>(List<T> requests, Func<T, A> requestFunc) where T : INodeSelectRequest where A : IUpdateRequiredEventArgs
         {
             List<T> selectedReqeusts = _nodeCollectionConfigs.Select(requests);
 
-            if (selectedReqeusts.Count == 0) return;
+            if (selectedReqeusts.Count == 0) return 0;
 
             List<A> updateEventArgs = selectedReqeusts.Select(requestFunc.Invoke).ToList();
 
             UpdateRequired?.Invoke(this, [.. updateEventArgs]);
+
+            return updateEventArgs.Count;
         }
     }
 }
