@@ -110,8 +110,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 FooterZoomGrid.Width = e.Width;
                 FooterZoomGrid.Height = e.Height;
-                TextBlockProjectWidth.Text = $"- {e.Width} -";
-                TextBlockProjectHeight.Text = $"- {e.Height} -";
+                TextBlockProjectWidth.Text = $"{e.Width}";
+                TextBlockProjectHeight.Text = $"{e.Height}";
             });
         }
 

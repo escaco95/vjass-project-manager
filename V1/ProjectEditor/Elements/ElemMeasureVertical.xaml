@@ -8,13 +8,34 @@
              d:DesignHeight="500" d:DesignWidth="500"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DataContext="{d:DesignInstance Type=local:ElemMeasureVertical, IsDesignTimeCreatable=True}">
-    <Grid HorizontalAlignment="Left" Width="100" Margin="-100,0,0,0" VerticalAlignment="Center">
-        <TextBlock Text="{Binding Text}"
-                   FontSize="50" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center">
+
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="GradientBrush1" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#80409AE1" Offset="0"/>
+            <GradientStop Color="#10409AE1" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GradientBrush2" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#10409AE1" Offset="0"/>
+            <GradientStop Color="#80409AE1" Offset="1"/>
+        </LinearGradientBrush>
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Left" Width="100" Margin="-100,0,0,0">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0" Background="#80409AE1" Height="1" Margin="20,0,20,0" VerticalAlignment="Top"/>
+        <Grid Grid.Row="0" Width="1" Background="{StaticResource GradientBrush1}" HorizontalAlignment="Center" Margin="0,1,0,20"/>
+        <TextBlock Grid.Row="1" Text="{Binding Text}" Padding="10" FontSize="50" Foreground="#40409AE1" TextAlignment="Center" HorizontalAlignment="Center">
             <TextBlock.LayoutTransform>
                 <RotateTransform Angle="-90" />
             </TextBlock.LayoutTransform>
         </TextBlock>
+        <Grid Grid.Row="2" Width="1" Background="{StaticResource GradientBrush2}" HorizontalAlignment="Center" Margin="0,20,0,1"/>
+        <Grid Grid.Row="2" Background="#80409AE1" Height="1" Margin="20,0,20,0" VerticalAlignment="Bottom"/>
     </Grid>
 </UserControl>
-    

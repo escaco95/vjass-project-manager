@@ -8,7 +8,30 @@
              d:DesignHeight="500" d:DesignWidth="500"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DataContext="{d:DesignInstance Type=local:ElemMeasureHorizontal, IsDesignTimeCreatable=True}">
-    <Grid VerticalAlignment="Top" Height="100" Margin="0,-100,0,0" HorizontalAlignment="Center">
-        <TextBlock Text="{Binding Text}" FontSize="50" Foreground="White" TextAlignment="Center" VerticalAlignment="Center"/>
+
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="GradientBrush1" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#80409AE1" Offset="0"/>
+            <GradientStop Color="#10409AE1" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GradientBrush2" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#10409AE1" Offset="0"/>
+            <GradientStop Color="#80409AE1" Offset="1"/>
+        </LinearGradientBrush>
+    </UserControl.Resources>
+    
+    <Grid VerticalAlignment="Top" Height="100" Margin="0,-100,0,0">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Column="0" Background="#80409AE1" Width="1" HorizontalAlignment="Left" Margin="0,20,0,20"/>
+        <Grid Grid.Column="0" VerticalAlignment="Center" Height="1" Background="{StaticResource GradientBrush1}" Margin="1,0,20,0"/>
+        <TextBlock Grid.Column="1" Padding="10" Text="{Binding Text}" FontSize="50" Foreground="#40409AE1" TextAlignment="Center" VerticalAlignment="Center"/>
+        <Grid Grid.Column="2" VerticalAlignment="Center" Height="1" Background="{StaticResource GradientBrush2}" Margin="20,0,1,0"/>
+        <Grid Grid.Column="2" Background="#80409AE1" Width="1" HorizontalAlignment="Right" Margin="0,20,0,20"/>
     </Grid>
 </UserControl>
