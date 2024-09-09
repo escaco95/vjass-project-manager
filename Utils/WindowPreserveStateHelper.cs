@@ -67,7 +67,15 @@ namespace vJassMainJBlueprint.Utils
             {
                 var json = JsonSerializer.Serialize(config, jsonSerializerOptions);
                 File.WriteAllText(configFilePath + ".temp", json);
-                File.Replace(configFilePath + ".temp", configFilePath, null);
+
+                if (File.Exists(configFilePath))
+                {
+                    File.Replace(configFilePath + ".temp", configFilePath, null);
+                }
+                else
+                {
+                    File.Move(configFilePath + ".temp", configFilePath);
+                }
             }
             catch (Exception ex)
             {

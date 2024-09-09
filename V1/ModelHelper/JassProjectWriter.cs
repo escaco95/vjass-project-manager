@@ -61,7 +61,14 @@ namespace vJassMainJBlueprint.V1.ModelHelper
                     WriteImportData(project, writer);
                 }
 
-                File.Replace(filePath + ".temp", filePath, null);
+                if (File.Exists(filePath))
+                {
+                    File.Replace(filePath + ".temp", filePath, null);
+                }
+                else
+                {
+                    File.Move(filePath + ".temp", filePath);
+                }
             }
             catch (Exception ex)
             {

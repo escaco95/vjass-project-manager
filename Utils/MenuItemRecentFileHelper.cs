@@ -52,7 +52,15 @@ namespace vJassMainJBlueprint.Utils
             {
                 var json = JsonSerializer.Serialize(CachedRecentFilePath);
                 File.WriteAllText(RecentFilePath + ".temp", json);
-                File.Replace(RecentFilePath + ".temp", RecentFilePath, null);
+
+                if (File.Exists(RecentFilePath))
+                {
+                    File.Replace(RecentFilePath + ".temp", RecentFilePath, null);
+                }
+                else
+                {
+                    File.Move(RecentFilePath + ".temp", RecentFilePath);
+                }
             }
             catch (Exception ex)
             {
