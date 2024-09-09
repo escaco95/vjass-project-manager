@@ -78,12 +78,12 @@ namespace vJassMainJBlueprint.V1.ModelFacade
             {
                 NodeHandleId = 0x100000;
                 NodeConfigs.Clear();
+                IndexNodeSourceFile.Clear();
             }
 
             public void Consume(JassProject jassProject)
             {
-                NodeHandleId = 0x100000;
-                NodeConfigs.Clear();
+                Reset();
 
                 foreach (var node in jassProject.Nodes)
                 {
