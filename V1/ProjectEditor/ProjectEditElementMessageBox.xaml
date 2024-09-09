@@ -13,7 +13,8 @@
         </Grid>
         <TextBlock x:Name="MessageTextBlock"
                    Text="샘플 텍스트입니다"
-                   HorizontalAlignment="Right"
+                   TextAlignment="Center"
+                   HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    FontSize="16"
                    Foreground="White"
