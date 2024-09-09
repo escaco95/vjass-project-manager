@@ -62,7 +62,7 @@
             </MenuItem>
         </Menu>
 
-        <!-- 아이콘 영역 -->
+        <!-- 도구 상자 : 샘플 아이콘 -->
         <tools:ToolSampleIcons x:Name="ToolSampleIcons" DockPanel.Dock="Right" Panel.ZIndex="1"/>
 
         <!-- 작업 영역 -->
@@ -76,38 +76,19 @@
             <Canvas x:Name="ZoomParent" >
                 
                 <!-- 줌/패닝 기능을 제공하는 컨테이너 -->
-                <StackPanel x:Name="ZoomChild"
-                    Canvas.Left="0"
-                    Canvas.Top="0">
+                <StackPanel x:Name="ZoomChild" Canvas.Left="0" Canvas.Top="0">
 
                     <StackPanel.LayoutTransform>
                         <ScaleTransform ScaleX="1.0" ScaleY="1.0" />
                     </StackPanel.LayoutTransform>
 
                     <!-- 프로젝트 문서 대응 그리드 -->
-                    <Grid x:Name="FooterZoomGrid"
-                        Width="500" 
-                        Height="500"
-                        Background="#1F1F1F" >
+                    <Grid x:Name="FooterZoomGrid" Width="500" Height="500" Background="#1F1F1F" >
 
-                        <!-- 문서 너비 표시기 -->
-                        <Border>
-                            <Grid VerticalAlignment="Top" Height="100" Margin="0,-100,0,0" HorizontalAlignment="Center">
-                                <TextBlock x:Name="TextBlockProjectWidth" Text="2000" FontSize="50" Foreground="White" TextAlignment="Center" VerticalAlignment="Center"/>
-                            </Grid>
-                        </Border>
+                        <!-- 문서 축 표시기 -->
+                        <elements:ElemMeasureHorizontal x:Name="TextBlockProjectWidth" Text="2000"/>
+                        <elements:ElemMeasureVertical x:Name="TextBlockProjectHeight" Text="2000"/>
 
-                        <!-- 문서 높이 표시기 -->
-                        <Border>
-                            <Grid HorizontalAlignment="Left" Width="100" Margin="-100,0,0,0" VerticalAlignment="Center">
-                                <TextBlock x:Name="TextBlockProjectHeight" Text="2000" FontSize="50" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center">
-                                    <TextBlock.LayoutTransform>
-                                        <RotateTransform Angle="-90" />
-                                    </TextBlock.LayoutTransform>
-                                </TextBlock>
-                            </Grid>
-                        </Border>
-                        
                         <Border>
                             <TextBlock x:Name="TextProjectName" 
                                 Text="이름 없는 프로젝트" 
