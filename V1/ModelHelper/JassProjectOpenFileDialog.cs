@@ -16,6 +16,7 @@ namespace vJassMainJBlueprint.V1.ModelHelper
         /// <returns>The selected file path, or null if no file is selected.</returns>
         public static string? Show()
         {
+            openFileDialog.FileName = ""; // 파일 이름 초기화
             if (openFileDialog.ShowDialog() == true)
             {
                 return openFileDialog.FileName;
