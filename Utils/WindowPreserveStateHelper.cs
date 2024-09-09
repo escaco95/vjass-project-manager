@@ -9,7 +9,7 @@ namespace vJassMainJBlueprint.Utils
     {
         private static readonly JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true };
 
-        private record WindowStateConfig(bool IsMaximized, double Left, double Top, double Width, double Height);
+        private record WindowStateConfig(bool IsMaximized, double Left, double Top, double Width, double Height, bool Topmost);
 
         public static void Apply(Window window, string configFileName)
         {
@@ -43,6 +43,7 @@ namespace vJassMainJBlueprint.Utils
                     whichWindow.Width = config.Width;
                     whichWindow.Height = config.Height;
                     whichWindow.WindowState = config.IsMaximized ? WindowState.Maximized : WindowState.Normal;
+                    whichWindow.Topmost = config.Topmost;
                 }
             }
             catch (Exception ex)
@@ -58,7 +59,8 @@ namespace vJassMainJBlueprint.Utils
                 Left: whichWindow.Left,
                 Top: whichWindow.Top,
                 Width: whichWindow.Width,
-                Height: whichWindow.Height
+                Height: whichWindow.Height,
+                Topmost: whichWindow.Topmost
             );
 
             try

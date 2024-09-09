@@ -51,13 +51,15 @@
                 <Separator/>
                 <MenuItem Header="프로젝트 설계도 크기 바꾸기(_S)..." Click="OnMenuProjectChangeSize"/>
                 <Separator/>
-                <MenuItem Header="모든 노드를 상대 경로로 변경(_R)..." Click="OnMenuProjectApplyRelativePaths"/>
-            </MenuItem>
-            <MenuItem Header="설계도(_S)">
                 <!-- TODO -->
                 <MenuItem Header="새 파일 추가(_W)..." InputGestureText="Ctrl+Shift+A" />
                 <!-- TODO -->
                 <MenuItem Header="폴더 단위 추가(_G)..." InputGestureText="Ctrl+Shift+D" />
+                <Separator/>
+                <MenuItem Header="모든 노드를 상대 경로로 변경(_R)..." Click="OnMenuProjectApplyRelativePaths"/>
+            </MenuItem>
+            <MenuItem x:Name="MenuWindow" Header="창(_W)" SubmenuOpened="OnMenuWindowSubMenuOpened">
+                <MenuItem x:Name="MenuWindowStayOnTop" Header="맨 위에 고정(_P)" Click="OnMenuWindowStayOnTop"/>
             </MenuItem>
         </Menu>
 
