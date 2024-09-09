@@ -8,10 +8,13 @@ namespace vJassMainJBlueprint.Utils
 {
     internal class MenuItemRecentFileHelper
     {
+        private const int MaxRecentFiles = 10;
+        private static readonly string RecentFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.recent.json");
+        private static readonly List<string> CachedRecentFilePath = [];
+        private static bool IsCached = false;
+
         public static void Apply(Window window, Func<List<MenuItem>> menuItemSupplier, Action<string> childClickAction)
         {
-            CacheRecentFilePath();
-
             menuItemSupplier.Invoke().ForEach(menuItem =>
             {
                 if (menuItem is not MenuItem parentMenuItem) return;
@@ -23,14 +26,12 @@ namespace vJassMainJBlueprint.Utils
 
             window.Closing += (sender, e) =>
             {
+                // 캐싱된 적 없다면 저장하지 않음
+                if (!IsCached) return;
+
                 Save();
             };
         }
-
-        private const int MaxRecentFiles = 10;
-        private static readonly string RecentFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.recent.json");
-        private static readonly List<string> CachedRecentFilePath = [];
-        private static bool IsCached = false;
 
         public static void Touch(string filePath)
         {
@@ -66,33 +67,45 @@ namespace vJassMainJBlueprint.Utils
 
             if (CachedRecentFilePath.Count == 0)
             {
-                parentMenuItem.Items.Add(new MenuItem
-                {
-                    Header = "(항목 없음)",
-                    IsEnabled = false
-                });
+                parentMenuItem.Items.Add(CreateNoItemsMenuItem());
             }
             else
             {
                 int index = 1;
                 foreach (var recentFile in CachedRecentFilePath)
                 {
-                    var menuItem = new MenuItem
-                    {
-                        Header = $"{index++} {Path.GetFileName(recentFile)} ({Path.GetDirectoryName(recentFile)})",
-                    };
-
-                    menuItem.Click += (sender, e) =>
-                    {
-                        if (sender is MenuItem clickedMenuItem)
-                        {
-                            childClickAction(recentFile);
-                        }
-                    };
-
+                    var menuItem = CreateRecentFileMenuItem(recentFile, index, childClickAction);
                     parentMenuItem.Items.Add(menuItem);
+                    index++;
                 }
             }
+        }
+
+        private static MenuItem CreateNoItemsMenuItem()
+        {
+            return new MenuItem
+            {
+                Header = "(항목 없음)",
+                IsEnabled = false
+            };
+        }
+
+        private static MenuItem CreateRecentFileMenuItem(string filePath, int index, Action<string> childClickAction)
+        {
+            var menuItem = new MenuItem
+            {
+                Header = $"{index} {Path.GetFileName(filePath)} ({Path.GetDirectoryName(filePath)})",
+            };
+
+            menuItem.Click += (sender, e) =>
+            {
+                if (sender is MenuItem clickedMenuItem)
+                {
+                    childClickAction(filePath);
+                }
+            };
+
+            return menuItem;
         }
 
         private static void CacheRecentFilePath()
