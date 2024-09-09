@@ -124,7 +124,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             }
             else
             {
-                if (JassProjectOpenFileDialog.Show() is string filePath)
+                if (JassProjectSaveFileDialog.Show() is string filePath)
                 {
                     JassProjectWriter.Write(projectEditFacade.GetProject(), filePath);
                     projectEditFacade.UpdateOrigin(filePath);
