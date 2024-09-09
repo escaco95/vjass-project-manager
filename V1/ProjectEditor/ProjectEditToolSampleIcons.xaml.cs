@@ -10,9 +10,9 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
     /// <summary>
     /// ProjectEditElementSampleIcons.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ProjectEditElementSampleIcons : UserControl
+    public partial class ProjectEditToolSampleIcons : UserControl
     {
-        public ProjectEditElementSampleIcons()
+        public ProjectEditToolSampleIcons()
         {
             InitializeComponent();
             LoadSampleIcons();

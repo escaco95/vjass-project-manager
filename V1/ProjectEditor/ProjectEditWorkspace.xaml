@@ -63,7 +63,7 @@
         </Menu>
 
         <!-- 아이콘 영역 -->
-        <projecteditor:ProjectEditElementSampleIcons x:Name="ToolSampleIcons" DockPanel.Dock="Right" Panel.ZIndex="1"/>
+        <projecteditor:ProjectEditToolSampleIcons x:Name="ToolSampleIcons" DockPanel.Dock="Right" Panel.ZIndex="1"/>
 
         <!-- 작업 영역 -->
         <Grid x:Name="WorkspaceGrid" 
