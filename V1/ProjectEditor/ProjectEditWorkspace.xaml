@@ -121,7 +121,7 @@
                         </Border>
 
                         <Border>
-                            <TextBlock x:Name="TextProjectAuthor" Text="저자 미상" 
+                            <TextBlock x:Name="TextProjectAuthor" Text="알 수 없음" 
                                 FontSize="50"
                                 Padding="20"
                                 Foreground="White" 
