@@ -12,10 +12,9 @@
              FocusVisualStyle="{x:Null}"
              Loaded="OnLoaded"
              KeyDown="OnKeyDown">
-
     <DockPanel>
         <!-- 상단 메뉴 -->
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" Panel.ZIndex="2">
             <MenuItem Header="파일(_F)">
                 <MenuItem Header="새로 만들기(_N)" InputGestureText="Ctrl+N" Click="OnMenuFileNewClick" />
                 <MenuItem Header="열기(_O)" InputGestureText="Ctrl+O" Click="OnMenuFileOpenClick" />
@@ -64,7 +63,7 @@
         </Menu>
 
         <!-- 아이콘 영역 -->
-        <projecteditor:ProjectEditElementSampleIcons x:Name="ToolSampleIcons" DockPanel.Dock="Right"/>
+        <projecteditor:ProjectEditElementSampleIcons x:Name="ToolSampleIcons" DockPanel.Dock="Right" Panel.ZIndex="1"/>
 
         <!-- 작업 영역 -->
         <Grid x:Name="WorkspaceGrid" 
