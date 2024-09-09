@@ -487,19 +487,18 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             MessageText.Info($"확대/축소 {(int)(nextZoomFactor * 100)}%");
         }
 
+        private void SelectionAdd(long nodeHandleId) => SelectionAdd([nodeHandleId]);
+
         private void SelectionAdd(List<long> nodeIds)
         {
-            nodeIds.ForEach(nodeId => SelectionAdd(nodeId));
-        }
-
-        private void SelectionAdd(long nodeHandleId)
-        {
-            if (_mouseState.IsSelected(nodeHandleId)) return;
-
-            // 논리 선택 갱신
-            _mouseState.SelectionAdd(nodeHandleId);
-            // 비주얼 선택
-            nodeElements[nodeHandleId].MarkAsSelected();
+            nodeIds.Where(nodeHandleId => !_mouseState.IsSelected(nodeHandleId))
+                .ToList().ForEach(nodeHandleId =>
+                {
+                    // 논리 선택 갱신
+                    _mouseState.SelectionAdd(nodeHandleId);
+                    // 비주얼 선택
+                    nodeElements[nodeHandleId].MarkAsSelected();
+                });
         }
 
         private void SelectionClear()
