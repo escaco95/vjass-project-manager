@@ -92,7 +92,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             Dispatcher.Invoke(() =>
             {
-                TextProjectName.Text = arg.Name;
+                TitleBlockProject.ProjectName = arg.Name;
             });
         }
 
@@ -100,7 +100,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             Dispatcher.Invoke(() =>
             {
-                TextProjectAuthor.Text = arg.Author;
+                TitleBlockProject.ProjectAuthor = arg.Author;
             });
         }
 

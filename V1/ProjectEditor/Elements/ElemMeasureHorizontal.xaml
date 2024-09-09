@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Elements"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="500">
-    <Border>
-        <Grid VerticalAlignment="Top" Height="100" Margin="0,-100,0,0" HorizontalAlignment="Center">
-            <TextBlock Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="50" Foreground="White" TextAlignment="Center" VerticalAlignment="Center"/>
-        </Grid>
-    </Border>
+             d:DesignHeight="500" d:DesignWidth="500"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DataContext="{d:DesignInstance Type=local:ElemMeasureHorizontal, IsDesignTimeCreatable=True}">
+    <Grid VerticalAlignment="Top" Height="100" Margin="0,-100,0,0" HorizontalAlignment="Center">
+        <TextBlock Text="{Binding Text}" FontSize="50" Foreground="White" TextAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
 </UserControl>

@@ -4,16 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Elements"
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="500">
-    <Border>
-        <Grid HorizontalAlignment="Left" Width="100" Margin="-100,0,0,0" VerticalAlignment="Center">
-            <TextBlock Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                       FontSize="50" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock.LayoutTransform>
-                    <RotateTransform Angle="-90" />
-                </TextBlock.LayoutTransform>
-            </TextBlock>
-        </Grid>
-    </Border>
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="500"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DataContext="{d:DesignInstance Type=local:ElemMeasureVertical, IsDesignTimeCreatable=True}">
+    <Grid HorizontalAlignment="Left" Width="100" Margin="-100,0,0,0" VerticalAlignment="Center">
+        <TextBlock Text="{Binding Text}"
+                   FontSize="50" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="-90" />
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+    </Grid>
 </UserControl>
+    

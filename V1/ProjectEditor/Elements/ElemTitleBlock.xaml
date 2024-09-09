@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="vJassMainJBlueprint.V1.ProjectEditor.Elements.ElemTitleBlock"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Elements"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="500"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DataContext="{d:DesignInstance Type=local:ElemTitleBlock, IsDesignTimeCreatable=True}">
+    <Grid>
+        
+        <TextBlock Text="{Binding ProjectName}" 
+                   FontSize="100"
+                   Padding="10"
+                   Foreground="White" 
+                   TextWrapping="NoWrap" 
+                   TextAlignment="Left"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left"
+                   Margin="20,0,0,0"/>
+        
+        <TextBlock Text="{Binding ProjectAuthor}" 
+                   FontSize="50"
+                   Padding="20"
+                   Foreground="White" 
+                   TextWrapping="NoWrap" 
+                   TextAlignment="Left"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Left"
+                   Margin="20,120,0,0"/>
+    </Grid>
+</UserControl>
