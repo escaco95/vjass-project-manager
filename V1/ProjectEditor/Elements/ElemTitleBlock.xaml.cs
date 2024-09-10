@@ -13,8 +13,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor.Elements
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty ProjectNameProperty = DependencyProperty.Register("ProjectName", typeof(string), typeof(ElemTitleBlock), new PropertyMetadata("이름 없는 프로젝트"));
-        public static readonly DependencyProperty ProjectAuthorProperty = DependencyProperty.Register("ProjectAuthor", typeof(string), typeof(ElemTitleBlock), new PropertyMetadata("알 수 없음"));
+        public static readonly DependencyProperty ProjectNameProperty = DependencyProperty.Register("ProjectName", typeof(string), typeof(ElemTitleBlock), new PropertyMetadata("설계도 이름"));
+        public static readonly DependencyProperty ProjectAuthorProperty = DependencyProperty.Register("ProjectAuthor", typeof(string), typeof(ElemTitleBlock), new PropertyMetadata("설계도 저자"));
 
         public string ProjectName { get { return (string)GetValue(ProjectNameProperty); } set { SetValue(ProjectNameProperty, value); } }
         public string ProjectAuthor { get { return (string)GetValue(ProjectAuthorProperty); } set { SetValue(ProjectAuthorProperty, value); } }

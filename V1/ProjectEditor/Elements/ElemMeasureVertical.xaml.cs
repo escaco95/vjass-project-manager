@@ -15,7 +15,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor.Elements
 
         // DependencyProperty for Text
         public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(ElemMeasureVertical), new PropertyMetadata("2000"));
+            DependencyProperty.Register("Text", typeof(string), typeof(ElemMeasureVertical), new PropertyMetadata("설계도 높이"));
 
         // CLR wrapper for Text
         public string Text
