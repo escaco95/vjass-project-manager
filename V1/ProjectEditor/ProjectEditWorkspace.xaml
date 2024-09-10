@@ -88,14 +88,14 @@
                         <!-- 설계도 배경 요소 -->
                         <Border BorderBrush="#409AE1" BorderThickness="1">
                             <Grid>
-                                
+
                                 <!-- 문서 축 표시기 -->
                                 <elements:ElemMeasureHorizontal x:Name="TextBlockProjectWidth" />
                                 <elements:ElemMeasureVertical x:Name="TextBlockProjectHeight" />
-                                
+
                                 <!-- 문서 정보 표시기 -->
                                 <elements:ElemTitleBlock x:Name="TitleBlockProject" />
-                                
+
                             </Grid>
                         </Border>
 
@@ -104,17 +104,18 @@
                             <!-- 격자 스냅 눈금자 커서 -->
                             <elements:ElemSnapCursor x:Name="SnapCursor" Visibility="Collapsed"/>
                         </Canvas>
-
+                        
                     </Grid>
-
                 </StackPanel>
+            </Canvas>
 
+            <Canvas>
                 <!-- 개체 선택 범위 표시기 -->
                 <Grid x:Name="SelectionGrid" Background="#80409AE1" Visibility="Hidden">
                     <Border BorderBrush="#C7DDEF" BorderThickness="1" />
                 </Grid>
             </Canvas>
-            
+
             <!-- 메시지 박스 -->
             <Border>
                 <overlays:OverlayMessageBox x:Name="MessageText" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" />
