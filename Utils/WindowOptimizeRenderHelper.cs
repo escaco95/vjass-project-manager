@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace vJassMainJBlueprint.Utils
@@ -7,8 +8,10 @@ namespace vJassMainJBlueprint.Utils
     /// <summary>
     /// Provides optimized window rendering support by minimizing layout recalculations during window resizing.
     /// </summary>
-    internal static class WindowOptimizeRenderHelper
+    public static class WindowOptimizeRenderHelper
     {
+        private static readonly TimeSpan LayoutUpdateDelay = TimeSpan.FromMilliseconds(200);
+
         /// <summary>
         /// Optimizes rendering by applying resize optimizations to the specified window and grids.
         /// </summary>
@@ -17,11 +20,26 @@ namespace vJassMainJBlueprint.Utils
         /// <param name="footerContainer">The footer container grid of the window.</param>
         public static void OptimizeRender(Window window, Grid clientArea, Grid footerContainer)
         {
+            ApplyOptimizedVisualTemplate(window, clientArea, footerContainer);
+            ApplyOptimizedLayoutBehavior(window, clientArea, footerContainer);
+        }
+
+        private static void ApplyOptimizedVisualTemplate(Window window, Grid clientArea, Grid footerContainer)
+        {
+            // Set the window background to black to prevent flickering during resize operations.
+            window.Background = Brushes.Black;
+            // Detach footer container from the visual tree to prevent layout recalculations.
+            footerContainer.ClipToBounds = true;
+            footerContainer.Width = clientArea.ActualWidth;
+            footerContainer.Height = clientArea.ActualHeight;
+            footerContainer.HorizontalAlignment = HorizontalAlignment.Left;
+            footerContainer.VerticalAlignment = VerticalAlignment.Top;
+        }
+
+        private static void ApplyOptimizedLayoutBehavior(Window window, Grid clientArea, Grid footerContainer)
+        {
             // Timer to delay the resize operation and reduce frequent layout updates.
-            DispatcherTimer resizeTimer = new()
-            {
-                Interval = TimeSpan.FromMilliseconds(200)
-            };
+            DispatcherTimer resizeTimer = new() { Interval = LayoutUpdateDelay };
 
             // Event handler for window size changes.
             window.SizeChanged += (sender, e) =>

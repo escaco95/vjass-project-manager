@@ -8,25 +8,15 @@
         mc:Ignorable="d"
         Title="MainWindow"
         Width="800"
-        Height="600" 
-        Background="Black">
-    
-    <!-- 윈도우 내부 크기를 측정하기 위해 사용되는 더미 그리드 -->
+        Height="600">
+
+    <!-- 최적화된 레이아웃 동작을 수행하는 2중 그리드 -->
     <Grid x:Name="ClientArea">
-        
-        <!-- 최적화된 레이아웃 계산 동작을 수행하는 실제 콘텐츠 컨테이너 그리드 -->
-        <Grid x:Name="FooterContainer"
-              Width="800" 
-              Height="600" 
-              Background="White" 
-              HorizontalAlignment="Left" 
-              VerticalAlignment="Top">
-            
+        <Grid x:Name="FooterContainer">
+
             <!-- 이 곳에 최적 렌더링될 콘텐츠 삽입 -->
             <projecteditor:ProjectEditWorkspace/>
-            
+
         </Grid>
-        
     </Grid>
-    
 </Window>
