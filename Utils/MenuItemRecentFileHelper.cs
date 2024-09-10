@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -15,6 +16,8 @@ namespace vJassMainJBlueprint.Utils
 
         public static void Apply(Window window, Func<List<MenuItem>> menuItemSupplier, Action<string> childClickAction)
         {
+            if (window == null) return;
+
             menuItemSupplier.Invoke().ForEach(menuItem =>
             {
                 if (menuItem is not MenuItem parentMenuItem) return;
