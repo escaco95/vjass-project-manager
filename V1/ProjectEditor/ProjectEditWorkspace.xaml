@@ -72,7 +72,7 @@
             MouseWheel="OnGridMouseWheel">
 
             <Canvas x:Name="ZoomParent" >
-                
+
                 <!-- 줌/패닝 기능을 제공하는 컨테이너 -->
                 <StackPanel x:Name="ZoomChild" Canvas.Left="0" Canvas.Top="0">
                     <StackPanel.LayoutTransform>
@@ -104,11 +104,12 @@
                             <!-- 격자 스냅 눈금자 커서 -->
                             <elements:ElemSnapCursor x:Name="SnapCursor" Visibility="Collapsed"/>
                         </Canvas>
-                        
+
                     </Grid>
                 </StackPanel>
             </Canvas>
 
+            <!-- 오버레이 요소 레이어 -->
             <Canvas>
                 <!-- 개체 선택 범위 표시기 -->
                 <Grid x:Name="SelectionGrid" Background="#80409AE1" Visibility="Hidden">
@@ -116,9 +117,19 @@
                 </Grid>
             </Canvas>
 
-            <!-- 메시지 박스 -->
+            <!-- 레이아웃 요소 레이어 -->
             <Border>
-                <overlays:OverlayMessageBox x:Name="MessageText" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" />
+                <Grid>
+                    <!-- 비네팅 효과 -->
+                    <Border BorderBrush="Black" BorderThickness="1">
+                        <Border.Effect>
+                            <BlurEffect Radius="5" KernelType="Gaussian"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <!-- 메시지 박스 -->
+                    <overlays:OverlayMessageBox x:Name="MessageText" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" />
+                </Grid>
             </Border>
         </Grid>
     </DockPanel>

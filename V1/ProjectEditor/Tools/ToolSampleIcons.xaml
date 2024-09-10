@@ -6,9 +6,6 @@
              xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Tools"
              mc:Ignorable="d">
     <ScrollViewer DockPanel.Dock="Right" Width="60">
-        <ScrollViewer.Effect>
-            <DropShadowEffect Direction="180" />
-        </ScrollViewer.Effect>
         <ScrollViewer.Background>
             <VisualBrush TileMode="Tile" Viewport="0,0,16,16" ViewportUnits="Absolute" Viewbox="0,0,16,16" ViewboxUnits="Absolute">
                 <VisualBrush.Visual>
