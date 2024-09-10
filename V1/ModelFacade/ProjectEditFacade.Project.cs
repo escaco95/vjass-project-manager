@@ -4,10 +4,10 @@ namespace vJassMainJBlueprint.V1.ModelFacade
 {
     partial class ProjectEditFacade
     {
-        public JassProject GetProject()
+        public JassProject GetProject(JassProject.Group[] groups)
         {
             JassProject.Node[] nodes = _nodeCollectionConfigs.NodeConfigs.Values.Select(nodeConfig => nodeConfig.Cast()).ToArray();
-            JassProject project = _projectConfig.Cast(nodes);
+            JassProject project = _projectConfig.Cast(nodes,groups);
 
             return project;
         }

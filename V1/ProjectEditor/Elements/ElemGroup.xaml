@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="vJassMainJBlueprint.V1.ProjectEditor.Elements.ElemGroup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:vJassMainJBlueprint.V1.ProjectEditor.Elements"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Top"
+             Width="110"
+             Height="60"
+             MouseDoubleClick="OnMouseDoubleClick"
+             MouseEnter="OnMouseEnter"
+             MouseLeave="OnMouseLeave"
+             MouseLeftButtonDown="OnMouseLeftButtonDown"
+             MouseLeftButtonUp="OnMouseLeftButtonUp"
+             MouseMove="OnMouseMove"
+             d:Width="300" d:Height="300"
+             mc:Ignorable="d" >
+    
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="문구 수정(_R)" Click="OnContextMenuRename"/>
+            <MenuItem Header="문구 크기 변경(_S)" Click="OnContextMenuFontSize"/>
+            <MenuItem Header="문구 색상 변경(_T)" Click="OnContextMenuForeground"/>
+            <MenuItem Header="배경 색상 변경(_B)" Click="OnContextMenuBackground"/>
+            <Separator/>
+            <MenuItem Header="문구 정렬(_A)" SubmenuOpened="OnContextMenuTextAlignOpen">
+                <MenuItem Header="좌측 상단(_7)" Click="OnContextMenuTextAlign" Tag="TopLeft"/>
+                <MenuItem Header="상단 중앙(_8)" Click="OnContextMenuTextAlign" Tag="TopCenter"/>
+                <MenuItem Header="우측 상단(_9)" Click="OnContextMenuTextAlign" Tag="TopRight"/>
+                <MenuItem Header="좌측 중앙(_4)" Click="OnContextMenuTextAlign" Tag="MiddleLeft"/>
+                <MenuItem Header="정중앙(_5)" Click="OnContextMenuTextAlign" Tag="MiddleCenter"/>
+                <MenuItem Header="우측 중앙(_6)" Click="OnContextMenuTextAlign" Tag="MiddleRight"/>
+                <MenuItem Header="좌측 하단(_1)" Click="OnContextMenuTextAlign" Tag="BottomLeft"/>
+                <MenuItem Header="하단 중앙(_2)" Click="OnContextMenuTextAlign" Tag="BottomCenter"/>
+                <MenuItem Header="우측 하단(_3)" Click="OnContextMenuTextAlign" Tag="BottomRight"/>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="삭제(_D)" Click="OnContextMenuDelete"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    
+    <Grid>
+        
+        <!-- 이동 및 크기 조절 핸들 -->
+        <Border x:Name="MoveHandle" Visibility="Collapsed" Cursor="ScrollAll" Background="#7160E8"  Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-15,-15,0,0" />
+        <Border x:Name="ResizeHandle" Visibility="Collapsed" Cursor="SizeNWSE" Background="#7160E8" Width="15" Height="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-15,-15" />
+
+        <!-- 라벨 배경 요소 -->
+        <Rectangle x:Name="Backdrop" Fill="#7160E8" Opacity="0.25"/>
+        <Border x:Name="BackdropBorder" BorderThickness="1" BorderBrush="#7160E8" />
+        <!-- 라벨 텍스트 요소 -->
+        <TextBlock x:Name="TextBlockLabel"  Text="텍스트" 
+                   Cursor="IBeam" TextAlignment="Left" FontSize="30" Foreground="White" 
+                   Padding="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+    </Grid>
+    
+</UserControl>

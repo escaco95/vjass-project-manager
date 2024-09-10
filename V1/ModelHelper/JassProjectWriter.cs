@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Text.Json.Nodes;
+using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.Config;
 using vJassMainJBlueprint.V1.Model;
 
@@ -17,6 +18,25 @@ namespace vJassMainJBlueprint.V1.ModelHelper
 
             public static JsonObject Version24090800(int version, JassProject project)
             {
+                var groups = new JsonArray();
+                foreach (var projectGroup in project.Groups)
+                {
+                    var group = new JsonObject
+                    {
+                        ["x"] = projectGroup.X,
+                        ["y"] = projectGroup.Y,
+                        ["width"] = projectGroup.Width,
+                        ["height"] = projectGroup.Height,
+                        ["text"] = projectGroup.Text,
+                        ["fontSize"] = projectGroup.FontSize,
+                        ["align"] = projectGroup.Align.ToString(),
+                        ["foreground"] = ColorHelper.ToHex(projectGroup.Foreground),
+                        ["background"] = ColorHelper.ToHex(projectGroup.Background),
+                    };
+
+                    groups.Add(group);
+                }
+
                 var nodes = new JsonArray();
                 foreach (var projectNode in project.Nodes)
                 {
@@ -45,6 +65,7 @@ namespace vJassMainJBlueprint.V1.ModelHelper
                     ["width"] = project.Width,
                     ["height"] = project.Height,
                     ["items"] = nodes,
+                    ["groups"] = groups,
                 };
             }
         }

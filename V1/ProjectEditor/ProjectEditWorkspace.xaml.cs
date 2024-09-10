@@ -170,6 +170,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             });
         }
 
+        public readonly struct SaveRequireMessage { }
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             MenuItemRecentFileHelper.Apply(Window.GetWindow(this), () => [MenuFileRecent], (filePath) =>
@@ -178,12 +180,23 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 {
                     if (HandleSaveChanges()) return;
 
-                    projectEditFacade.MakeNewProject(filePath, JassProjectReader.Read(filePath));
+                    // clean all groups
+                    GroupContainer.Children.Clear();
+                    var project = JassProjectReader.Read(filePath);
+                    projectEditFacade.MakeNewProject(filePath, project);
+                    project.Groups.ToList().ForEach(group =>
+                    {
+                        ElemGroup elemGroup = new(group);
+                        GroupContainer.Children.Add(elemGroup);
+                    });
                     ViewportResetDelayed(true);
 
                     MessageText.Info($"{Path.GetFileName(filePath)} 프로젝트를 열었습니다.");
                 });
             });
+
+            // 내부 Element 로부터 저장 필요함 메시지 수신
+            Messenger.Subscribe<SaveRequireMessage>((message) => { Dispatcher.Invoke(() => projectEditFacade.UpdateOriginSaveRequired(true)); });
 
             // UserControl이 로드될 때 포커스 설정
             Keyboard.Focus(this);
@@ -203,10 +216,13 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                             return;
                         }
 
+                        // clean all groups
+                        GroupContainer.Children.Clear();
                         projectEditFacade.MakeNewProject();
                     });
                 };
             });
+
             // 화면 초기화
             ViewportResetDelayed(true);
         }

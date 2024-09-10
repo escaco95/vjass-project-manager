@@ -63,9 +63,9 @@ namespace vJassMainJBlueprint.V1.ModelFacade
                 Height = jassProject.Height;
             }
 
-            public JassProject Cast(JassProject.Node[] nodes)
+            public JassProject Cast(Node[] nodes, Group[] groups)
             {
-                return new JassProject(Name, Author, Width, Height, nodes);
+                return new JassProject(Name, Author, Width, Height, nodes, groups);
             }
         }
 

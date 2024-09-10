@@ -51,7 +51,9 @@
                 <MenuItem Header="프로젝트 설계도 크기 바꾸기(_S)..." Click="OnMenuProjectChangeSize"/>
                 <Separator/>
                 <MenuItem Header="새 파일 추가(_W)..." InputGestureText="Ctrl+Shift+A" Click="OnMenuProjectSourceAdd" />
-                <MenuItem Header="폴더 단위 추가(_G)..." InputGestureText="Ctrl+Shift+D" Click="OnMenuProjectSourceAddDirectory" />
+                <MenuItem Header="폴더 단위 추가(_D)..." InputGestureText="Ctrl+Shift+D" Click="OnMenuProjectSourceAddDirectory" />
+                <Separator/>
+                <MenuItem Header="새 그룹 추가(_G)..." InputGestureText="Ctrl+Shift+G" Click="OnMenuProjectGroupAdd" />
                 <Separator/>
                 <MenuItem Header="모든 노드를 상대 경로로 변경(_R)..." Click="OnMenuProjectApplyRelativePaths"/>
             </MenuItem>
@@ -99,10 +101,13 @@
                             </Grid>
                         </Border>
 
-                        <!-- 프로젝트 노드 컨테이너 -->
-                        <Canvas x:Name="NodeContainer">
+                        <!-- 설계도 텍스트 컨테이너 -->
+                        <Canvas x:Name="GroupContainer" >
                             <!-- 격자 스냅 눈금자 커서 -->
                             <elements:ElemSnapCursor x:Name="SnapCursor" Visibility="Collapsed"/>
+                        </Canvas>
+                        <!-- 설계도 노드 컨테이너 -->
+                        <Canvas x:Name="NodeContainer">
                         </Canvas>
 
                     </Grid>

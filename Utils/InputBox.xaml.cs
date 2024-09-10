@@ -14,7 +14,7 @@ namespace vJassMainJBlueprint.Utils
         {
             InputBox inputBox = new(title, message, defaultValue)
             {
-                Owner = Window.GetWindow(dependencyObject)
+                Owner = GetWindow(dependencyObject)
             };
             return inputBox.ShowDialog() == true ? inputBox.Input : null;
         }

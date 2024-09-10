@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.Config;
 using vJassMainJBlueprint.V1.Model;
+using static vJassMainJBlueprint.V1.Model.JassProject;
 
 namespace vJassMainJBlueprint.V1.ModelHelper
 {
@@ -22,20 +23,39 @@ namespace vJassMainJBlueprint.V1.ModelHelper
                     LoadValue<string>(json, "author"),
                     LoadValue<int>(json, "width"),
                     LoadValue<int>(json, "height"),
-                    LoadItems(json)
+                    LoadItems(json),
+                    LoadGroups(json)
                 );
             }
 
-            private static JassProject.Node[] LoadItems(JsonObject json)
+            private static Group[] LoadGroups(JsonObject json)
+            {
+                return Load<JsonArray>(json, "groups")
+                    .Select(groupNode =>
+                    {
+                        if (groupNode is not JsonObject itemObject) { throw new Exception("Invalid item type."); }
+                        return new Group(
+                                LoadValue<int>(itemObject, "x"),
+                                LoadValue<int>(itemObject, "y"),
+                                LoadValue<int>(itemObject, "width"),
+                                LoadValue<int>(itemObject, "height"),
+                                LoadValue<string>(itemObject, "text"),
+                                LoadValue<int>(itemObject, "fontSize"),
+                                (GroupTextAlignment)Enum.Parse(typeof(GroupTextAlignment),LoadValue<string>(itemObject, "align")),
+                                ColorHelper.Parse(LoadValue<string>(itemObject, "foreground")),
+                                ColorHelper.Parse(LoadValue<string>(itemObject, "background"))
+                            );
+                    })
+                    .ToArray();
+            }
+
+            private static Node[] LoadItems(JsonObject json)
             {
                 return Load<JsonArray>(json, "items")
                     .Select(itemNode =>
                     {
-                        if (itemNode is not JsonObject itemObject)
-                        {
-                            throw new Exception("Invalid item type.");
-                        }
-                        return new JassProject.Node(
+                        if (itemNode is not JsonObject itemObject) { throw new Exception("Invalid item type."); }
+                        return new Node(
                             LoadValue<int>(itemObject, "x"),
                             LoadValue<int>(itemObject, "y"),
                             LoadValue<int>(itemObject, "width"),

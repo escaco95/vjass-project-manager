@@ -27,6 +27,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             { "view.allnodes",  new KeyBindingSettings(){ Key = "Space", Modifiers = ModifierKeys.None } },
             { "project.source.add",  new KeyBindingSettings(){ Key = "A", Modifiers = ModifierKeys.Control | ModifierKeys.Shift } },
             { "project.source.adddir",  new KeyBindingSettings(){ Key = "D", Modifiers = ModifierKeys.Control | ModifierKeys.Shift } },
+            { "project.source.addgroup",  new KeyBindingSettings(){ Key = "G", Modifiers = ModifierKeys.Control | ModifierKeys.Shift } },
         };
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -96,6 +97,9 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     break;
                 case "project.source.adddir":
                     OnMenuProjectSourceAddDirectory(null, null);
+                    break;
+                case "project.source.addgroup":
+                    OnMenuProjectGroupAdd(null, null);
                     break;
             }
         }

@@ -7,6 +7,7 @@ using System.Windows.Media;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.Config;
 using vJassMainJBlueprint.V1.ModelFacade;
+using vJassMainJBlueprint.V1.ProjectEditor.Elements;
 
 namespace vJassMainJBlueprint.V1.ProjectEditor
 {
@@ -142,6 +143,35 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                     Image = null,
                 };
             }).ToList());
+        }
+
+        private void OnMenuProjectGroupAdd(object? sender, RoutedEventArgs? e)
+        {
+            // 노드의 추가 위치는 화면 중앙
+            double zoomFactor = ((ScaleTransform)ZoomChild.LayoutTransform).ScaleX;
+            var viewX = ZoomParent.ActualWidth / 2 / zoomFactor;
+            var viewY = ZoomParent.ActualHeight / 2 / zoomFactor;
+            var worldX = -Canvas.GetLeft(ZoomChild) / zoomFactor + viewX;
+            var worldY = -Canvas.GetTop(ZoomChild) / zoomFactor + viewY;
+
+            // 범위 제한 및 그리드 스냅
+            var finalWidth = 100;
+            var finalHeight = 100;
+            var finalX = JassProjectSpecification.Snap(Math.Min(Math.Max((int)worldX, 0), projectEditFacade.GetProjectWidth() - finalWidth));
+            var finalY = JassProjectSpecification.Snap(Math.Min(Math.Max((int)worldY, 0), projectEditFacade.GetProjectHeight() - finalHeight));
+
+            ElemGroup group = new()
+            {
+                Width = finalWidth,
+                Height = finalHeight,
+            };
+
+            Canvas.SetLeft(group, finalX);
+            Canvas.SetTop(group, finalY);
+
+            GroupContainer.Children.Add(group);
+
+            projectEditFacade.UpdateOriginSaveRequired(true);
         }
 
         private void OnMenuProjectApplyRelativePaths(object? sender, RoutedEventArgs? e)

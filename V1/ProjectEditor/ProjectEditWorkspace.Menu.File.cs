@@ -1,8 +1,10 @@
 ﻿using System.IO;
 using System.Windows;
 using vJassMainJBlueprint.Utils;
+using vJassMainJBlueprint.V1.Model;
 using vJassMainJBlueprint.V1.ModelFacade;
 using vJassMainJBlueprint.V1.ModelHelper;
+using vJassMainJBlueprint.V1.ProjectEditor.Elements;
 
 namespace vJassMainJBlueprint.V1.ProjectEditor
 {
@@ -15,6 +17,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 if (HandleSaveChanges()) return;
 
+                // clean all groups
+                GroupContainer.Children.Clear();
                 projectEditFacade.MakeNewProject();
                 ViewportResetDelayed(true);
 
@@ -32,7 +36,15 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 Optional<string>.Of(JassProjectOpenFileDialog.Show())
                 .IfPresent(filePath =>
                 {
-                    projectEditFacade.MakeNewProject(filePath, JassProjectReader.Read(filePath));
+                    // clean all groups
+                    GroupContainer.Children.Clear();
+                    var project = JassProjectReader.Read(filePath);
+                    projectEditFacade.MakeNewProject(filePath, project);
+                    project.Groups.ToList().ForEach(group =>
+                    {
+                        ElemGroup elemGroup = new(group);
+                        GroupContainer.Children.Add(elemGroup);
+                    });
                     ViewportResetDelayed(true);
 
                     MessageText.Info($"{Path.GetFileName(filePath)} 프로젝트를 열었습니다.");
@@ -47,6 +59,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 if (HandleSaveChanges()) return;
 
+                // clean all groups
+                GroupContainer.Children.Clear();
                 projectEditFacade.MakeNewProject();
                 ViewportResetDelayed(true);
 
@@ -78,7 +92,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
                 Optional<string>.Of(JassProjectSaveFileDialog.Show())
                 .IfPresent(filePath =>
                 {
-                    JassProjectWriter.Write(projectEditFacade.GetProject(), filePath);
+                    JassProject.Group[] groups = GroupContainer.Children.OfType<ElemGroup>().Select(group => group.ToModel()).ToArray();
+                    JassProjectWriter.Write(projectEditFacade.GetProject(groups), filePath);
                     projectEditFacade.UpdateOrigin(filePath);
 
                     MessageText.Info($"{Path.GetFileName(filePath)} 파일로 저장했습니다.");
@@ -117,7 +132,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         {
             if (projectEditFacade.Origin == ProjectEditFacade.OriginType.File)
             {
-                JassProjectWriter.Write(projectEditFacade.GetProject(), projectEditFacade.OriginFilePath);
+                JassProject.Group[] groups = GroupContainer.Children.OfType<ElemGroup>().Select(group => group.ToModel()).ToArray();
+                JassProjectWriter.Write(projectEditFacade.GetProject(groups), projectEditFacade.OriginFilePath);
                 projectEditFacade.UpdateOriginSaveRequired(false);
                 return false;
             }
@@ -125,7 +141,8 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
             {
                 if (JassProjectSaveFileDialog.Show() is string filePath)
                 {
-                    JassProjectWriter.Write(projectEditFacade.GetProject(), filePath);
+                    JassProject.Group[] groups = GroupContainer.Children.OfType<ElemGroup>().Select(group => group.ToModel()).ToArray();
+                    JassProjectWriter.Write(projectEditFacade.GetProject(groups), filePath);
                     projectEditFacade.UpdateOrigin(filePath);
                     return false;
                 }
