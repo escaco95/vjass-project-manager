@@ -11,8 +11,9 @@ namespace vJassMainJBlueprint.V1
         public MainWindow()
         {
             InitializeComponent();
-            WindowOptimizeRenderHelper.OptimizeRender(this, ClientArea, FooterContainer);
-            WindowPreserveStateHelper.Apply(this, "config.window.json");
+
+            // FeatureManager를 통해 기능 초기화
+            this.InitializeFeatures();
         }
     }
 }
