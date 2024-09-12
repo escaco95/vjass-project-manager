@@ -13,6 +13,7 @@
              Loaded="OnLoaded"
              KeyDown="OnKeyDown">
     <DockPanel>
+        
         <!-- 상단 메뉴 -->
         <Menu DockPanel.Dock="Top" Panel.ZIndex="2">
             <MenuItem Header="파일(_F)">
