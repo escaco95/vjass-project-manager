@@ -95,20 +95,17 @@ namespace vJassMainJBlueprint.V1.ProjectEditor.Tools
                     ToolTip = "클릭하여 이미지를 클립보드에 복사합니다.",
                 };
 
-                image.MouseDown += Image_MouseDown;
+                image.MouseDown += (_, _) => CopyImage(image);
                 RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
 
                 SampleIconContainer.Children.Add(image);
             }
         }
 
-        private void Image_MouseDown(object sender, RoutedEventArgs e)
+        private static void CopyImage(Image image)
         {
-            if (sender is Image image)
-            {
-                Clipboard.SetImage(image.Source as BitmapSource);
-                Messenger.Send(new OverlayMessageBox.ShowActionMessage("아이콘을 복사했습니다"));
-            }
+            Clipboard.SetImage(image.Source as BitmapSource);
+            Messenger.Send(new OverlayMessageBox.ShowActionMessage("아이콘을 복사했습니다"));
         }
     }
 }
