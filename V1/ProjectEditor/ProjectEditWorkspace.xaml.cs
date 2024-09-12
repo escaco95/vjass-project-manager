@@ -5,7 +5,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using vJassMainJBlueprint.Utils;
 using vJassMainJBlueprint.V1.ModelFacade;
-using vJassMainJBlueprint.V1.ModelHelper;
 using vJassMainJBlueprint.V1.ProjectEditor.Elements;
 
 namespace vJassMainJBlueprint.V1.ProjectEditor
@@ -22,6 +21,9 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
         public ProjectEditWorkspace()
         {
             InitializeComponent();
+
+            // FeatureManager를 통해 기능 초기화
+            this.InitializeFeatures();
 
             // 편집기 파사드 초기화
             projectEditFacade.UpdateRequired += OnEditFacadeUpdateRequired;
@@ -83,7 +85,7 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
             if (e.OriginType == ProjectEditFacade.OriginType.File)
             {
-                MenuItemRecentFileHelper.Touch(e.OriginFilePath);
+                RecentFileHelper.Touch(e.OriginFilePath);
             }
         }
 
@@ -174,27 +176,6 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            MenuItemRecentFileHelper.Apply(Window.GetWindow(this), () => [MenuFileRecent], (filePath) =>
-            {
-                SafeAction(() =>
-                {
-                    if (HandleSaveChanges()) return;
-
-                    // clean all groups
-                    GroupContainer.Children.Clear();
-                    var project = JassProjectReader.Read(filePath);
-                    projectEditFacade.MakeNewProject(filePath, project);
-                    project.Groups.ToList().ForEach(group =>
-                    {
-                        ElemGroup elemGroup = new(group);
-                        GroupContainer.Children.Add(elemGroup);
-                    });
-                    ViewportResetDelayed(true);
-
-                    MessageText.Info($"{Path.GetFileName(filePath)} 프로젝트를 열었습니다.");
-                });
-            });
-
             // 내부 Element 로부터 저장 필요함 메시지 수신
             Messenger.Subscribe<SaveRequireMessage>((message) => { Dispatcher.Invoke(() => projectEditFacade.UpdateOriginSaveRequired(true)); });
 
