@@ -8,14 +8,15 @@ using vJassMainJBlueprint.V1.ProjectEditor.Overlays;
 namespace vJassMainJBlueprint.V1.ProjectEditor.Tools
 {
     /// <summary>
-    /// ProjectEditElementSampleIcons.xaml에 대한 상호 작용 논리
+    /// ProjectEditElementSampleIcons.xaml에 대한 상호 작용 논리.
+    /// 샘플 이미지를 로드하고, 사용자가 클릭하여 이미지를 클립보드에 복사할 수 있도록 처리합니다.
     /// </summary>
     public partial class ToolSampleIcons : UserControl
     {
         /// <summary>
-        /// 어플리케이션에서 제공하는 샘플 이미지들입니다.
+        /// 어플리케이션에서 제공하는 샘플 이미지들의 Base64 문자열 배열입니다.
         /// </summary>
-        private static readonly string[] SampleImages = [
+        private static readonly string[] SampleImagesBase64 = [
             // 에디터 아이콘 - 트리거
             "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABOSURBVDhPYwCC/xRirIKkYAhDS0sLTmPDyGrQMKoB2ACyHBZDSDMABNAMId4AHBjCIGQAOobpA2LCBqCDUQMGvQFkYAgDZAApGKKP4T8AQesYO/c82a0AAAAASUVORK5CYII=",
             // 에디터 아이콘 - 이벤트
@@ -80,32 +81,58 @@ namespace vJassMainJBlueprint.V1.ProjectEditor.Tools
             LoadSampleIcons();
         }
 
+        /// <summary>
+        /// 샘플 이미지를 로드하고, 컨트롤에 추가합니다.
+        /// </summary>
         private void LoadSampleIcons()
         {
-            foreach (var sampleImageBase64String in SampleImages)
+            foreach (var base64String in SampleImagesBase64)
             {
-                Image image = new()
-                {
-                    Width = 20,
-                    Height = 20,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(0, 0, 0, 10),
-                    Source = Base64Helper.Convert(sampleImageBase64String),
-                    ToolTip = "클릭하여 이미지를 클립보드에 복사합니다.",
-                };
-
-                image.MouseDown += (_, _) => CopyImage(image);
-                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
-
-                SampleIconContainer.Children.Add(image);
+                // 이미지를 생성하여 컨트롤에 추가
+                var sampleImage = CreateSampleImage(base64String);
+                SampleIconContainer.Children.Add(sampleImage);
             }
         }
 
-        private static void CopyImage(Image image)
+        /// <summary>
+        /// Base64 문자열을 이미지로 변환하고, 설정된 스타일의 Image 컨트롤을 생성합니다.
+        /// </summary>
+        /// <param name="base64String">Base64 문자열</param>
+        /// <returns>Image 컨트롤</returns>
+        private static Image CreateSampleImage(string base64String)
         {
-            Clipboard.SetImage(image.Source as BitmapSource);
-            Messenger.Send(new OverlayMessageBox.ShowActionMessage("아이콘을 복사했습니다"));
+            var image = new Image
+            {
+                Width = 20,
+                Height = 20,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, 0, 0, 10),
+                Source = Base64Helper.Convert(base64String),
+                ToolTip = "클릭하여 이미지를 클립보드에 복사합니다."
+            };
+
+            // 이미지 클릭 시 복사 동작 설정
+            image.MouseDown += (_, _) => CopyImageToClipboard(image);
+
+            // 이미지 스케일링 모드 설정
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+
+            return image;
+        }
+
+        /// <summary>
+        /// 이미지를 클립보드에 복사하고, 복사 완료 메시지를 표시합니다.
+        /// </summary>
+        /// <param name="image">복사할 Image 컨트롤</param>
+        private static void CopyImageToClipboard(Image image)
+        {
+            // 이미지 소스를 클립보드에 복사
+            if (image.Source is BitmapSource bitmapSource)
+            {
+                Clipboard.SetImage(bitmapSource);
+                Messenger.Send(new OverlayMessageBox.ShowActionMessage("아이콘을 클립보드에 복사했습니다."));
+            }
         }
     }
 }
