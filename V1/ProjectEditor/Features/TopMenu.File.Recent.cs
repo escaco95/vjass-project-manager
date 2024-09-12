@@ -8,7 +8,6 @@ namespace vJassMainJBlueprint.V1.ProjectEditor
 {
     partial class ProjectEditWorkspace
     {
-
         [FeatureManager.FeatureSubscriber]
         private class FeatureTopMenuFileRecent
         {

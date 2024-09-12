@@ -10,8 +10,7 @@
              d:DesignHeight="450"
              Focusable="True"
              FocusVisualStyle="{x:Null}"
-             Loaded="OnLoaded"
-             KeyDown="OnKeyDown">
+             Loaded="OnLoaded">
     <DockPanel>
         
         <!-- 상단 메뉴 -->
